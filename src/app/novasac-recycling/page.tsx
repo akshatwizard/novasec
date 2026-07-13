@@ -92,7 +92,7 @@ const industries = [
 const steps = [
     {
         step: "01",
-        title: "You Have Old fibc Bags",
+        title: "You Have Old FIBC Bags",
         description:
             "Used woven polypropylene bags that are no longer required.",
         icon: Archive,
@@ -204,7 +204,7 @@ export default function Recycling() {
                             <p className="text-slate-200 text-sm md:text-base leading-relaxed max-w-xl">
                                 Don't send used woven polypropylene bags to landfill.
                                 Novasac helps businesses responsibly recover,
-                                recycle, and repurpose old fibc bags through
+                                recycle, and repurpose old FIBC bags through
                                 a dedicated collection initiative.
                             </p>
 
@@ -310,7 +310,7 @@ export default function Recycling() {
 
                             <p className="mt-6 text-content-muted leading-relaxed">
                                 We work with companies across multiple industries that
-                                regularly use woven polypropylene and fibc bags.
+                                regularly use woven polypropylene and FIBC bags.
                             </p>
 
                             <p className="mt-4 text-content-muted leading-relaxed">
@@ -357,7 +357,7 @@ export default function Recycling() {
                         </h2>
 
                         <p className="mt-5 text-content-muted leading-relaxed">
-                            Getting rid of old fibc bags shouldn't be complicated.
+                            Getting rid of old FIBC bags shouldn't be complicated.
                             We've designed a straightforward process that helps businesses
                             dispose of packaging responsibly.
                         </p>
@@ -483,7 +483,7 @@ export default function Recycling() {
 
                             <p className="mt-4 text-white leading-relaxed">
                                 Through this recycling initiative, we help companies
-                                divert used fibc bags away from landfill and into
+                                divert used FIBC bags away from landfill and into
                                 more responsible recovery channels.
                             </p>
 
