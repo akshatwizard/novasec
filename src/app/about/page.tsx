@@ -460,11 +460,11 @@ export default function AboutUs() {
                                 </div>
 
                                 {/* MOBILE EXPANDED CONTENT */}
-                                <div className="md:hidden absolute inset-x-0 bottom-0 p-6 z-20">
+                                {/* <div className="md:hidden absolute inset-x-0 bottom-0 p-6 z-20">
                                     <p className="text-sm text-stone-300 leading-relaxed mt-2">
                                         {member.bio}
                                     </p>
-                                </div>
+                                </div> */}
                             </motion.div>
                         ))}
                     </div>
