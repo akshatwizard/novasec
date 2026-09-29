@@ -150,7 +150,7 @@ export default function Header() {
                     <div className="relative flex items-center gap-2" ref={dropdownRef}>
                         <Image
                             src={"/images/wap.png"}
-                            alt='COntact us'
+                            alt='Contact us'
                             width={20}
                             height={20}
                             className='size-7 cursor-pointer'

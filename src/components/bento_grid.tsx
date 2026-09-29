@@ -31,8 +31,8 @@ const items: GridItems[] = [
         url: "/category/big-bags",
     },
     {
-        title: "Custom Made Bulks Bags",
-        description: "Curated offers updated weekly.",
+        title: "Custom-made Bulk Bags",
+        description: "Tailor-made bulk bags built to your exact specifications.",
         image: "/images/custom-bag/bag.jpg",
         cta: "Contact Us",
         url: "/custom-made-bags",
