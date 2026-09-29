@@ -335,9 +335,9 @@ export default function LoginModal({ isOpen, onClose, currentStep, changeStep }:
 
                                         <p className="text-center text-xs text-stone-400 mt-5 leading-relaxed">
                                             By continuing you agree to our{" "}
-                                            <a href="#" className="text-amber-600 hover:underline">Terms</a>
+                                            <a href="/terms" className="text-amber-600 hover:underline">Terms</a>
                                             {" & "}
-                                            <a href="#" className="text-amber-600 hover:underline">Privacy Policy</a>
+                                            <a href="/privacy" className="text-amber-600 hover:underline">Privacy Policy</a>
                                         </p>
                                     </motion.div>
                                 )}

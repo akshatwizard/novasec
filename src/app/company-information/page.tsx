@@ -168,7 +168,7 @@ export default function LegalInformation() {
                                     </p>
                                     <div className="flex flex-col gap-3">
                                         <a
-                                            href="/privacy-policy"
+                                            href="/privacy"
                                             className="inline-flex items-center justify-between gap-3 px-5 py-3 rounded-xl border border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors duration-200 group"
                                         >
                                             <span className="font-sans text-sm">Privacy Policy</span>
@@ -177,7 +177,7 @@ export default function LegalInformation() {
                                             </svg>
                                         </a>
                                         <a
-                                            href="/terms-and-conditions"
+                                            href="/terms"
                                             className="inline-flex items-center justify-between gap-3 px-5 py-3 rounded-xl border border-stone-200 bg-white text-stone-600 hover:border-primary-200 hover:text-primary-700 transition-colors duration-200 group"
                                         >
                                             <span className="font-sans text-sm">Terms &amp; Conditions</span>
@@ -202,7 +202,7 @@ export default function LegalInformation() {
                                     <p className="md:text-base text-sm text-stone-500 leading-relaxed">
                                         Novasac is not liable for any damages arising from the use of information
                                         published on this website. For more information, please refer to our{" "}
-                                        <a href="/terms-and-conditions" className="text-primary-600 hover:underline">
+                                        <a href="/terms" className="text-primary-600 hover:underline">
                                             General Terms &amp; Conditions
                                         </a>
                                         .
