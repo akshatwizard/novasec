@@ -50,10 +50,10 @@ const products = [
     {
         id: 'fibc',
         badge: 'FIBC / Jumbo Bags',
-        title: 'FIBC Bags with Recycled Content',
+        title: 'Big Bags Made from 100% Recycled PP',
         subtitle: 'High-performance bulk bags for sustainable large-volume handling',
         description:
-            'Manufactured using recycled polypropylene (PP), our FIBC bags are engineered for safe and reliable handling of bulk materials across industrial, agricultural, and construction sectors — without compromising on load capacity or durability.',
+            'A sustainable solution for bulk material handling, manufactured entirely from recycled polypropylene. These bags give recycled material a second life while offering a practical, versatile packaging solution for industrial applications.',
         specs: [
             { label: 'Bag Type', value: 'FIBC with Recycled PP Fabric' },
             { label: 'Size Range', value: '80×80×90 cm — 100×100×120 cm' },
@@ -72,7 +72,11 @@ const products = [
         badgeBg: 'bg-primary-600 text-white',
         subtitleColor: 'text-primary-700',
         ctaBg: 'bg-primary-600 hover:bg-primary-500',
-        images: "/images/recycled/fibc.jpg"
+        images: "/images/recycled/fibc.jpg",
+        // The new photo carries its own "100% Recycled PP" + AENOR marks (top-left / top-right) and is square,
+        // so: don't overlay the EN 15343 pill on top of it, and use a white panel so it blends in.
+        hideCertBadge: true,
+        imagePanelGradient: 'from-white to-white',
     },
     {
         id: 'ppws',
@@ -301,7 +305,7 @@ export default function RecycledBags() {
                             >
                                 {/* Image placeholder panel */}
                                 <div
-                                    className={`relative rounded-3xl overflow-hidden bg-linear-to-br ${p.panelGradient} border ${p.border} aspect-4/3 flex items-center justify-center`}
+                                    className={`relative rounded-3xl overflow-hidden bg-linear-to-br ${p.imagePanelGradient ?? p.panelGradient} border ${p.border} aspect-4/3 flex items-center justify-center`}
                                 >
                                     <div className="flex flex-col items-center gap-3 text-center p-8">
                                         {/* <div className="w-16 h-16 rounded-2xl bg-primary-600 text-white flex items-center justify-center shadow-lg">
@@ -319,10 +323,12 @@ export default function RecycledBags() {
                                     </div>
 
                                     {/* certification badge */}
-                                    <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
-                                        <BadgeCheck className="w-3.5 h-3.5 text-primary-600" />
-                                        <span className="text-xs font-semibold text-slate-700">EN 15343 / AENOR</span>
-                                    </div>
+                                    {!p.hideCertBadge && (
+                                        <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+                                            <BadgeCheck className="w-3.5 h-3.5 text-primary-600" />
+                                            <span className="text-xs font-semibold text-slate-700">EN 15343 / AENOR</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Content */}
