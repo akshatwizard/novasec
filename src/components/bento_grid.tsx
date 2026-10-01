@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Section from './ui/section'
 import Wrapper from './ui/wrapper'
 import Image from "next/image";
+import { Recycle } from 'lucide-react';
 
 type GridItems = {
     title: string;
@@ -11,6 +12,7 @@ type GridItems = {
     cta: string;
     url: string;
     tag?: string;
+    icon?: boolean;
 }
 
 const items: GridItems[] = [
@@ -24,11 +26,11 @@ const items: GridItems[] = [
     //     tag: "Featured"
     // },
     {
-        title: "Big Bag Outlet",
-        description: "High-quality branded packaging solutions for businesses of every scale.",
-        image: "/images/bento/big_bag.png",
-        cta: "Shop Now",
-        url: "/category/big-bags",
+        title: "Recycling & Waste Management",
+        image: "/images/bento/recycling.jpg",
+        cta: "See More",
+        url: "/recycled-bags",
+        icon: true,
     },
     {
         title: "Custom-made Bulk Bags",
@@ -81,6 +83,13 @@ export default function BentoGrid() {
                                 <span className="absolute top-5 left-5 z-10 rounded-full bg-primary-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">
                                     {item.tag}
                                 </span>
+                            )}
+
+                            {/* Icon badge */}
+                            {item.icon && (
+                                <div className="absolute top-5 left-5 z-10 w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                                    <Recycle className="w-5 h-5 text-primary-600" />
+                                </div>
                             )}
 
                             {/* Bottom Content */}
