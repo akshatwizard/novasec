@@ -13,6 +13,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useSearchSuggestions } from '@/hooks/search';
 import MobileSearch from '../mobile_search';
 import { AnimatePresence, Variants, motion } from 'motion/react';
+import { cartCount, openCart, useCart } from '@/lib/cart_store';
 
 
 const containerVariants: Variants = {
@@ -58,6 +59,7 @@ export default function Header() {
     const [openLoginModal, setOpenLoginModal] = useState<boolean>(false);
     const [steps, setSteps] = useState<"login" | "otp">("login");
     const { isAuthenticated, user, logout } = useAuth()
+    const cartUnits = cartCount(useCart().items)
     const router = useRouter()
     const [openMenu, setOpenMenu] = useState<boolean>(false);
     const [query, setQuery] = useState<string>("")
@@ -156,9 +158,14 @@ export default function Header() {
                             className='size-7 cursor-pointer'
                         />
 
-                        <button name='Shopping cart' className="relative hidden md:flex items-center justify-center w-10 h-10 rounded-sm transition-colors duration-300 ease-in-out hover:bg-primary-400 cursor-pointer">
+                        <button name='Shopping cart' onClick={openCart} className="relative hidden md:flex items-center justify-center w-10 h-10 rounded-sm transition-colors duration-300 ease-in-out hover:bg-primary-400 cursor-pointer">
                             <ShoppingCart className="text-white" size={28} strokeWidth={1} fill='white' />
-                            <span className='sr-only'>Shopping cart</span>
+                            {cartUnits > 0 && (
+                                <span aria-hidden="true" className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[11px] font-bold leading-none text-primary-600 shadow">
+                                    {cartUnits > 99 ? '99+' : cartUnits}
+                                </span>
+                            )}
+                            <span className='sr-only'>Shopping cart{cartUnits > 0 ? `, ${cartUnits} ${cartUnits === 1 ? 'unit' : 'units'}` : ''}</span>
                         </button>
 
                         <button name='Options' className="hidden md:flex items-center justify-center w-10 h-10 rounded-sm transition-colors duration-300 ease-in-out hover:bg-primary-400 cursor-pointer"

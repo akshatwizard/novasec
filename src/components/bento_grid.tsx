@@ -1,8 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import Section from './ui/section'
 import Wrapper from './ui/wrapper'
 import Image from "next/image";
-import { Recycle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { MenuResponse } from '@/types/menu.types';
 
 type GridItems = {
     title: string;
@@ -12,36 +16,46 @@ type GridItems = {
     cta: string;
     url: string;
     tag?: string;
-    icon?: boolean;
 }
 
-const items: GridItems[] = [
-    // {
-    //     title: "Our Popular Product",
-    //     description: "High-quality branded packaging solutions for businesses of every scale.",
-    //     image: "/images/bento/popular_product.png",
-    //     large: true,
-    //     cta: "Shop Now",
-    //     url: "/popular-products",
-    //     tag: "Featured"
-    // },
-    {
-        title: "Recycling & Waste Management",
-        image: "/images/bento/recycling.jpg",
-        cta: "See More",
-        url: "/recycled-bags",
-        icon: true,
-    },
-    {
-        title: "Custom-made Bulk Bags",
-        description: "Tailor-made bulk bags built to your exact specifications.",
-        image: "/images/custom-bag/bag.jpg",
-        cta: "Contact Us",
-        url: "/custom-made-bags",
-    },
-];
-
 export default function BentoGrid() {
+    // Reuses the same "menu" query the header already fetches — React Query
+    // de-dupes this against that request, so it's not an extra network call.
+    const { data } = useQuery<MenuResponse>({
+        queryKey: ["menu"],
+        queryFn: async function () {
+            const res = await axios.get<MenuResponse>("https://www.gangapapers.in/novasac/api/menu");
+            return res.data
+        },
+    })
+
+    // Resolve the live category slug for "Big Bags" instead of a hardcoded guess.
+    // Falls back to the previous known-good path if the menu hasn't loaded yet or the
+    // category can't be matched, so the link is never broken.
+    const bulkBagsCategory = data?.data.find(
+        (item) => item.title.trim().toLowerCase().startsWith("big bag")
+    );
+    const bulkBagsUrl = bulkBagsCategory
+        ? `/category/${bulkBagsCategory.category_slug}`
+        : "/category/big-bags";
+
+    const items: GridItems[] = [
+        {
+            title: "Big Bag Outlet",
+            description: "High-quality branded packaging solutions for businesses of every scale.",
+            image: "/images/bento/big_bag.png",
+            cta: "Shop Now",
+            url: bulkBagsUrl,
+        },
+        {
+            title: "Custom-made Bulk Bags",
+            description: "Tailor-made bulk bags built to your exact specifications.",
+            image: "/images/custom-bag/bag.jpg",
+            cta: "Contact Us",
+            url: "/custom-made-bags",
+        },
+    ];
+
     return (
         <Section>
             <Wrapper>
@@ -83,13 +97,6 @@ export default function BentoGrid() {
                                 <span className="absolute top-5 left-5 z-10 rounded-full bg-primary-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">
                                     {item.tag}
                                 </span>
-                            )}
-
-                            {/* Icon badge */}
-                            {item.icon && (
-                                <div className="absolute top-5 left-5 z-10 w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-lg">
-                                    <Recycle className="w-5 h-5 text-primary-600" />
-                                </div>
                             )}
 
                             {/* Bottom Content */}

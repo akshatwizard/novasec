@@ -220,7 +220,7 @@ export default function LoginModal({ isOpen, onClose, currentStep, changeStep }:
                                     src="/images/logo/logo-b.svg"
                                     width={150}
                                     height={64}
-                                    alt="Wooden Souvenir"
+                                    alt="Novasac"
                                     className="w-24 h-auto"
                                 />
                                 <button

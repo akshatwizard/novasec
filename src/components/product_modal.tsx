@@ -55,7 +55,7 @@ export default function ProductModals({ product }: ProductModalsProps) {
 
 
 //Shared: Overlay wrapper
-function ModalOverlay({ onClose, children }: { onClose: () => void, children: React.ReactNode }) {
+export function ModalOverlay({ onClose, children }: { onClose: () => void, children: React.ReactNode }) {
 
     useEffect(() => {
         const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -105,7 +105,7 @@ function ProductStrip({ product }: { product: ProductInfo }) {
 }
 
 // Shared: Field label + input wrapper
-function Field({ label, required, children }: { label: string, required?: boolean, children: React.ReactNode }) {
+export function Field({ label, required, children }: { label: string, required?: boolean, children: React.ReactNode }) {
     return (
         <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-semibold tracking-[0.18em] uppercase text-stone-400">
@@ -116,12 +116,12 @@ function Field({ label, required, children }: { label: string, required?: boolea
     )
 }
 
-const inputCls =
+export const inputCls =
     'w-full rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-800 placeholder-stone-300 outline-none transition focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100'
 
 
 // Shared: Section divider
-function SectionDivider({ label }: { label: string }) {
+export function SectionDivider({ label }: { label: string }) {
     return (
         <div className="flex items-center gap-3">
             <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-stone-300">
@@ -133,7 +133,7 @@ function SectionDivider({ label }: { label: string }) {
 }
 
 // Shared: Success screen
-function SuccessScreen({ icon, title, subtitle, accentClass, onClose }: {
+export function SuccessScreen({ icon, title, subtitle, accentClass, onClose }: {
     icon: React.ReactNode, title: string, subtitle: string, accentClass: string, onClose: () => void
 }) {
     return (
@@ -153,7 +153,7 @@ function SuccessScreen({ icon, title, subtitle, accentClass, onClose }: {
     )
 }
 
-function ErrorBanner({ message }: { message: string }) {
+export function ErrorBanner({ message }: { message: string }) {
     return (
         <div className="mx-0 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             <span className="mt-0.5 shrink-0">⚠</span>
@@ -162,7 +162,7 @@ function ErrorBanner({ message }: { message: string }) {
     )
 }
 //Error display Function
-function getApiError(err: unknown): string {
+export function getApiError(err: unknown): string {
     if (err instanceof AxiosError) {
         return (
             err.response?.data?.message ??

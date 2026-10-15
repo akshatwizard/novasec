@@ -105,7 +105,7 @@ export default function MobileSearch({ open, onClose }: MobileSearchProps) {
                                     inputMode="search"
                                     enterKeyHint="search"
                                     autoComplete="off"
-                                    placeholder="Search products, temples, medals…"
+                                    placeholder="Search products, big bags, PP sacks…"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     onFocus={() => setIsFocused(true)}
@@ -168,7 +168,7 @@ export default function MobileSearch({ open, onClose }: MobileSearchProps) {
                                         Popular
                                     </p>
                                     <div className="flex flex-wrap gap-2">
-                                        {['Big Bags', 'Small Bags', 'Jumbo Bag With Liner'].map((term) => (
+                                        {['Big Bags', 'Small Bags', 'Big Bag with Liner'].map((term) => (
                                             <button
                                                 key={term}
                                                 onClick={() => handleSelect(term)}
