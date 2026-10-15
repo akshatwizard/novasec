@@ -69,6 +69,6 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
         const { meta } = res.data
         return { title: meta.title, description: meta.description, keywords: meta.keywords }
     } catch {
-        return { title: 'Search | Wooden Souvenir' }
+        return { title: 'Search | Novasac' }
     }
 }

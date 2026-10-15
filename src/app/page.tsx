@@ -8,6 +8,7 @@ import Faq from '@/components/faq'
 import Industry from '@/components/industry'
 // import NewsLetter from '@/components/news_letter'
 import ProductCategory from '@/components/product_category'
+import RecycledBagsSection from '@/components/recycled_bags_section'
 import Products from '@/components/new_arrival_products'
 // import Promotional from '@/components/promotional'
 // import Testimonials from '@/components/testimonials'
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <main className='overflow-hidden'>
       <BentoGrid />
+      <RecycledBagsSection />
       {/* <AdditionalDetails /> */}
       {/* <Hero/> */}
       <About />

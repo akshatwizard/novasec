@@ -11,6 +11,7 @@ import { AuthProvider } from "@/context/auth_context";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import CartDrawer from "@/components/cart_drawer";
 
 const montserrat = Montserrat({
   variable: "--font-montserrate",
@@ -50,6 +51,7 @@ export default function RootLayout({
               </SmoothScrollProvider>
             </AuthProvider>
             <Footer />
+            <CartDrawer />
           </Providers>
         </GoogleOAuthProvider>
         <Toaster />
