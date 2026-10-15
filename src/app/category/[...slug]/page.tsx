@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             keywords: meta.keywords,
         }
     } catch {
-        return { title: 'Product Catalog | Wooden Souvenir' }
+        return { title: 'Product Catalog | Novasac' }
     }
 }
 
