@@ -5,7 +5,6 @@ import SmoothScrollProvider from "@/lib/smooth_scroll";
 import TopBar from "@/components/top_bar";
 import Header from "@/components/header/header";
 import DesktopHeader from "@/components/header/desktop.header";
-import MobileNavLinks from "@/components/header/mobile_nav_links";
 import Footer from "@/components/footer";
 import Providers from "@/lib/providers";
 import { AuthProvider } from "@/context/auth_context";
@@ -47,7 +46,6 @@ export default function RootLayout({
             <AuthProvider>
               <Header />
               <DesktopHeader />
-              <MobileNavLinks />
               <SmoothScrollProvider>
                 {children}
               </SmoothScrollProvider>

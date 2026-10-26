@@ -32,8 +32,3 @@ export const MenuItems: MenuType[] = [
         icon: "/images/hero/company.jpeg"
     },
 ];
-// Main-menu grouping: Recycled Bags joins the four product categories (from the menu API) as a
-// highlighted primary link; the other static pages sit in the always-visible secondary row.
-export const PRIMARY_STATIC_PATHS = ["/recycled-bags"];
-export const PrimaryStaticItems = MenuItems.filter((m) => PRIMARY_STATIC_PATHS.includes(m.path));
-export const SecondaryMenuItems = MenuItems.filter((m) => !PRIMARY_STATIC_PATHS.includes(m.path));

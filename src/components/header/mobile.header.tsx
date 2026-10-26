@@ -7,7 +7,7 @@ import { MenuResponse } from "@/types/menu.types";
 import axios from "axios";
 import { useState } from "react";
 import Image from "next/image";
-import { PrimaryStaticItems, SecondaryMenuItems } from "@/constant/menu";
+import { MenuItems } from "@/constant/menu";
 
 type Props = {
     isOpen: boolean;
@@ -159,13 +159,8 @@ export default function MobileMenu({ isOpen, onClose }: Props) {
                             }
 
                             {
-                                [...PrimaryStaticItems, ...SecondaryMenuItems].map((menu, idx) => (
+                                MenuItems.map((menu, idx) => (
                                     <div className="border-b border-zinc-50" key={menu.name}>
-                                        {idx === PrimaryStaticItems.length && (
-                                            <p className="px-5 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                                                More
-                                            </p>
-                                        )}
                                         <Link
                                             href={menu.path}
                                             className={`flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors duration-200 text-zinc-700 hover:bg-zinc-50`}
