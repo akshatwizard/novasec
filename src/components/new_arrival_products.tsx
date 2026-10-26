@@ -33,7 +33,8 @@ export default function Products({ limit }: Props) {
 
     return (
         <Section>
-            <Wrapper>
+            {/* On the homepage it follows the categories directly, so the top gap is smaller. */}
+            <Wrapper className={limit ? "lg:pt-6 md:pt-6 sm:pt-4 pt-4" : undefined}>
                 <div className="w-full flex flex-col gap-2">
                     <Heading>Popular products</Heading>
                     <SubHeading>

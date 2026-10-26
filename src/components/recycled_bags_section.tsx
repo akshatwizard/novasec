@@ -79,7 +79,6 @@ export default function RecycledBagsSection() {
                                 src={PRODUCT_IMAGE}
                                 alt={PRODUCT_IMAGE_ALT}
                                 fill
-                                priority
                                 sizes="(max-width: 768px) 100vw, 580px"
                                 className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                             />
