@@ -65,7 +65,7 @@ export default function RecycledBagsSection() {
     return (
         <Section>
             <Wrapper className="lg:py-10 md:py-8 sm:py-6 py-6">
-                <div className="overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-soft md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:grid-cols-[400px_minmax(0,1fr)]">
+                <div className="overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-soft md:grid md:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:grid-cols-[520px_minmax(0,1fr)] xl:grid-cols-[580px_minmax(0,1fr)]">
 
                     {/* Product picture */}
                     <div className="flex items-center bg-linear-to-br from-primary-50 via-white to-white p-3 lg:p-4">
@@ -73,14 +73,14 @@ export default function RecycledBagsSection() {
                             type="button"
                             onClick={() => setZoomOpen(true)}
                             aria-label="Enlarge product image"
-                            className="group relative mx-auto block aspect-[1418/1109] w-full max-w-md cursor-zoom-in overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5"
+                            className="group relative mx-auto block aspect-[1418/1109] w-full max-w-lg md:max-w-none cursor-zoom-in overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5"
                         >
                             <Image
                                 src={PRODUCT_IMAGE}
                                 alt={PRODUCT_IMAGE_ALT}
                                 fill
                                 priority
-                                sizes="(max-width: 768px) 100vw, 400px"
+                                sizes="(max-width: 768px) 100vw, 580px"
                                 className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                             />
                             <span className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-zinc-700 shadow-sm backdrop-blur-sm">

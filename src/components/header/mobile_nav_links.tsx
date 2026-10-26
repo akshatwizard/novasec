@@ -44,15 +44,15 @@ export default function MobileNavLinks() {
 
     return (
         <nav aria-label="Main menu" className="min-[1150px]:hidden w-full border-b border-zinc-200 bg-white">
-            <ul className="flex flex-wrap items-center justify-center gap-2 px-4 py-2.5">
+            <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 px-4 py-2.5">
                 {primary.map((link) => (
                     <li key={link.href} className="shrink-0">
                         <Link
                             href={link.href}
                             aria-current={isCurrent(link.href) ? "page" : undefined}
-                            className={`block rounded-full border px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors ${isCurrent(link.href)
-                                ? "border-primary-500 bg-primary-500 text-white"
-                                : "border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-500 hover:text-white"
+                            className={`block border-b-2 py-0.5 text-[13px] font-bold whitespace-nowrap transition-colors ${isCurrent(link.href)
+                                ? "border-primary-600 text-primary-700"
+                                : "border-transparent text-primary-600 hover:text-primary-700"
                                 }`}
                         >
                             {link.title}
@@ -60,7 +60,7 @@ export default function MobileNavLinks() {
                     </li>
                 ))}
             </ul>
-            <ul className="flex items-center justify-center gap-1 overflow-x-auto border-t border-zinc-100 bg-zinc-50 px-4 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <ul className="flex items-center justify-end gap-1 overflow-x-auto border-t border-zinc-100 bg-zinc-50 px-4 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {SecondaryMenuItems.map((item, idx) => (
                     <li key={item.path} className="flex shrink-0 items-center">
                         {idx > 0 && <span aria-hidden="true" className="mx-1.5 size-1 rounded-full bg-zinc-300" />}

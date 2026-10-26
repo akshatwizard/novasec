@@ -18,16 +18,17 @@ const FALLBACK_CATEGORIES = [
   { title: "Garden/Garbage Bags", href: "/category/garden-bags" },
 ];
 
-const pillBase =
-  "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition-colors duration-200";
-const pillIdle = "border-primary-200 bg-primary-50 text-primary-700 hover:border-primary-500 hover:bg-primary-500 hover:text-white";
-const pillActive = "border-primary-500 bg-primary-500 text-white";
+// Open (unboxed) bold links; an underline marks hover, an open dropdown and the current page.
+const linkBase =
+  "relative flex h-full items-center gap-1.5 text-[15px] font-bold tracking-wide transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-full after:bg-primary-600 after:transition-transform after:duration-300 hover:text-primary-700 hover:after:scale-x-100";
+const linkIdle = "text-primary-600 after:scale-x-0";
+const linkActive = "text-primary-700 after:scale-x-100";
 
 /**
  * Desktop main menu (≥1150px), two always-visible rows:
  *  1. Primary — the four product categories (from the menu API, with their size/type dropdowns)
- *     plus Recycled Bags, shown as highlighted pills.
- *  2. Secondary — Technical Textiles, Custom-made Bulk Bags and About Us, as a slim row below.
+ *     plus Recycled Bags, as open bold links.
+ *  2. Secondary — Technical Textiles, Custom-made Bulk Bags and About Us, as a slim right-aligned row below.
  */
 export default function DesktopHeader() {
   const [active, setActive] = useState<string | null>(null)
@@ -57,14 +58,14 @@ export default function DesktopHeader() {
         aria-label="Main menu"
         className={`relative z-20 ${scrolled ? "bg-white/90 backdrop-blur-md" : "bg-white"} border-b border-zinc-200 lg:px-12 md:px-10 px-8 h-14`}
       >
-        <div className='w-full max-w-7xl mx-auto flex items-center h-full gap-2'>
+        <div className='w-full max-w-7xl mx-auto flex items-center h-full gap-7'>
 
           {!data?.data.length && FALLBACK_CATEGORIES.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isCurrent(item.href) ? "page" : undefined}
-              className={`${pillBase} ${isCurrent(item.href) ? pillActive : pillIdle}`}
+              className={`${linkBase} ${isCurrent(item.href) ? linkActive : linkIdle}`}
             >
               {item.title}
             </Link>
@@ -85,7 +86,7 @@ export default function DesktopHeader() {
                 <Link
                   href={href}
                   aria-current={isCurrent(href) ? "page" : undefined}
-                  className={`${pillBase} ${isCurrent(href) || active === key ? pillActive : pillIdle}`}
+                  className={`${linkBase} ${isCurrent(href) || active === key ? linkActive : linkIdle}`}
                 >
                   {item.title}
                   {groups.length > 0 && (
@@ -139,7 +140,7 @@ export default function DesktopHeader() {
               key={item.path}
               href={item.path}
               aria-current={isCurrent(item.path) ? "page" : undefined}
-              className={`${pillBase} ${isCurrent(item.path) ? pillActive : pillIdle}`}
+              className={`${linkBase} ${isCurrent(item.path) ? linkActive : linkIdle}`}
             >
               {item.name}
             </Link>
@@ -163,7 +164,7 @@ export default function DesktopHeader() {
 
       {/* Row 2 — secondary */}
       <div className={`relative z-10 ${scrolled ? "bg-zinc-50/90 backdrop-blur-md" : "bg-zinc-50"} border-b border-zinc-200 lg:px-12 md:px-10 px-8 h-9`}>
-        <ul className='w-full max-w-7xl mx-auto flex items-center h-full gap-1'>
+        <ul className='w-full max-w-7xl mx-auto flex items-center justify-end h-full gap-1'>
           {SecondaryMenuItems.map((item, idx) => (
             <li key={item.path} className="flex items-center h-full">
               {idx > 0 && <span aria-hidden="true" className="mx-2 size-1 rounded-full bg-zinc-300" />}
