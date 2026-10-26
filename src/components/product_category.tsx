@@ -2,7 +2,6 @@
 
 import Section from './ui/section'
 import Wrapper from './ui/wrapper'
-import { Heading, SubHeading } from './ui/headings'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronRight, PackageSearch } from 'lucide-react'
@@ -51,9 +50,17 @@ export default function ProductCategory() {
         <Section>
             <Wrapper className="lg:gap-8 md:gap-6 gap-5 lg:pt-10 md:pt-8 pt-6 lg:pb-12 md:pb-10 pb-8">
 
-                <div className="flex flex-col gap-2">
-                    <Heading>Our Product Categories</Heading>
-                    <SubHeading>Industrial bags and sacks for every load — choose a category to see the full range.</SubHeading>
+                <div className="flex flex-col gap-3">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
+                        <span className="size-1.5 rounded-full bg-primary-500" />
+                        Our Product Categories
+                    </span>
+                    <h2 className="lg:text-5xl md:text-4xl text-3xl leading-tight font-light text-zinc-900">
+                        Industrial bags built for <em className="text-primary-500">every load</em>
+                    </h2>
+                    <p className="max-w-2xl text-pretty text-zinc-600 md:text-lg text-base">
+                        From heavy-duty big bags to certified recycled bags — choose a category to explore the full range.
+                    </p>
                 </div>
 
                 {isLoading ? (
@@ -101,7 +108,7 @@ const gridCls =
 function CategoryCardSkeleton() {
     return (
         <div className="rounded-xl bg-white border border-zinc-100 overflow-hidden animate-pulse">
-            <div className="h-44 bg-zinc-200" />
+            <div className="aspect-[4/3] bg-zinc-200" />
             <div className="p-4 space-y-2">
                 <div className="h-4 bg-zinc-200 rounded w-3/4" />
                 <div className="h-3 bg-zinc-100 rounded w-full" />
@@ -126,35 +133,36 @@ function CategoryCard({ href, title, image, text, badge, priority }: CategoryCar
             href={href}
             className="group relative flex flex-col rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
         >
-            <div className="relative h-36 sm:h-44 overflow-hidden bg-zinc-100">
+            {/* Whole picture shown (no cropping), on a light background */}
+            <div className="relative aspect-[4/3] overflow-hidden bg-zinc-50">
                 <Image
                     src={image}
                     alt={title}
                     fill
                     priority={priority}
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
 
-            {badge && (
-                <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-zinc-700 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
-                    {badge}
-                </span>
-            )}
-
-            <div className="flex flex-1 flex-col gap-1.5 p-4">
-                <p className="text-base font-semibold text-zinc-800 group-hover:text-primary-500 transition-colors">
+            <div className="flex flex-1 flex-col gap-2 p-4 md:p-5">
+                <h3 className="text-lg md:text-xl font-semibold leading-snug text-zinc-800 group-hover:text-primary-500 transition-colors">
                     {title}
-                </p>
-                <p className="text-xs leading-relaxed text-zinc-500">
+                </h3>
+                <p className="text-sm md:text-[15px] leading-relaxed text-zinc-600">
                     {text}
                 </p>
-                <span className="mt-auto pt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary-600">
-                    View products
-                    <ChevronRight size={14} className="transition-transform group-hover:translate-x-0.5" />
-                </span>
+                <div className="mt-auto flex items-center justify-between gap-2 pt-3">
+                    <span className="inline-flex items-center gap-1 text-sm md:text-[15px] font-semibold text-primary-600">
+                        View products
+                        <ChevronRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                    {badge && (
+                        <span className="shrink-0 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs md:text-[13px] font-semibold text-zinc-600">
+                            {badge}
+                        </span>
+                    )}
+                </div>
             </div>
         </Link>
     );
