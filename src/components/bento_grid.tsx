@@ -60,7 +60,7 @@ export default function BentoGrid() {
         <Section>
             <Wrapper>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {items.map((item, i) => (
+                    {items.map((item) => (
                         <div
                             key={item.title}
                             className={`group relative overflow-hidden bg-neutral-900 rounded-3xl ${item.large ? "md:col-span-2 h-90" : "h-110"
@@ -70,8 +70,6 @@ export default function BentoGrid() {
                                 src={item.image}
                                 alt={item.title}
                                 fill
-                                priority={i === 0}
-                                fetchPriority={i === 0 ? "high" : "auto"}
                                 sizes={item.large
                                     ? "(max-width: 768px) 100vw, 100vw"
                                     : "(max-width: 768px) 100vw, 50vw"

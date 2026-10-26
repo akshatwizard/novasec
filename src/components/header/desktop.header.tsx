@@ -1,28 +1,45 @@
 'use client';
-import { MenuItems } from '@/constant/menu';
+import { PrimaryStaticItems, SecondaryMenuItems } from '@/constant/menu';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronRight, Factory, Heart, ShoppingCart, Sprout, User } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import axios from 'axios'
 import { MenuResponse } from '@/types/menu.types';
 import Image from 'next/image';
 
+// Shown while the menu API loads, or if it fails, so the primary links are always there.
+const FALLBACK_CATEGORIES = [
+  { title: "Big Bags", href: "/category/big-bags" },
+  { title: "Small Bags", href: "/category/small-bags" },
+  { title: "Asbestos Bags", href: "/category/asbestos-bags" },
+  { title: "Garden/Garbage Bags", href: "/category/garden-bags" },
+];
+
+const pillBase =
+  "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition-colors duration-200";
+const pillIdle = "border-primary-200 bg-primary-50 text-primary-700 hover:border-primary-500 hover:bg-primary-500 hover:text-white";
+const pillActive = "border-primary-500 bg-primary-500 text-white";
+
+/**
+ * Desktop main menu (≥1150px), two always-visible rows:
+ *  1. Primary — the four product categories (from the menu API, with their size/type dropdowns)
+ *     plus Recycled Bags, shown as highlighted pills.
+ *  2. Secondary — Technical Textiles, Custom-made Bulk Bags and About Us, as a slim row below.
+ */
 export default function DesktopHeader() {
   const [active, setActive] = useState<string | null>(null)
+  const pathname = usePathname()
   const { scrollY } = useScroll();
-  const [scrolled, setScrolled] = useState<boolean | null>(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest > 180) {
-      setScrolled(true);
-    } else {
-      setScrolled(null);
-    }
+    setScrolled(latest > 180);
   });
 
-  const { data, isFetching, isLoading } = useQuery<MenuResponse>({
+  const { data } = useQuery<MenuResponse>({
     queryKey: ["menu"],
     queryFn: async function () {
       const res = await axios.get<MenuResponse>("https://www.gangapapers.in/novasac/api/menu");
@@ -30,129 +47,109 @@ export default function DesktopHeader() {
     },
   })
 
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <div className={`sticky top-0 z-40 w-full ${scrolled ? "shadow-md bg-white/80 backdrop-blur-md" : "bg-white"} border-b border-zinc-200 max-[1150px]:hidden lg:px-12 md:px-10 px-8 h-12`}>
+    <div className={`sticky top-0 z-40 w-full max-[1150px]:hidden ${scrolled ? "shadow-md" : ""}`}>
 
-      <div className='w-full max-w-7xl mx-auto flex items-center h-full justify-between'>
+      {/* Row 1 — primary */}
+      <nav
+        aria-label="Main menu"
+        className={`relative z-20 ${scrolled ? "bg-white/90 backdrop-blur-md" : "bg-white"} border-b border-zinc-200 lg:px-12 md:px-10 px-8 h-14`}
+      >
+        <div className='w-full max-w-7xl mx-auto flex items-center h-full gap-2'>
 
-        <div className='flex items-center h-full gap-1 w-full'>
+          {!data?.data.length && FALLBACK_CATEGORIES.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
+              className={`${pillBase} ${isCurrent(item.href) ? pillActive : pillIdle}`}
+            >
+              {item.title}
+            </Link>
+          ))}
 
-          {
-            (isFetching || isLoading) && (
-              ["Big Bags", "Small Bags", "Asbestos Bags", "Garden/Garbage Bags"].map((k, i) => (
-                <button key={i} disabled className="px-1.5 text-sm font-medium text-primary-500 flex items-center gap-1.5" >
-                  {k}
-                  <ChevronDown
-                    size={12}
-                    className={`transition-transform duration-300`}
-                  />
-                </button>
-              ))
-            )
-          }
+          {data?.data.map((item, idx) => {
+            const key = `dynamic-${idx}`
+            const href = `/category/${item.category_slug}`
+            const groups = item.attributes.filter((attr) => attr.values.length > 0)
 
-          {
-            data && data.data.map((item, idx) => {
-              const key = `dynamic-${idx}`
-              return (
-                <div
-                  key={key}
-                  className='h-full relative px-1.5 group flex items-center text-sm font-medium text-primary-500'
-                  onMouseEnter={() => setActive(key)}
-                  onMouseLeave={() => setActive(null)}
+            return (
+              <div
+                key={key}
+                className='h-full relative flex items-center'
+                onMouseEnter={() => setActive(key)}
+                onMouseLeave={() => setActive(null)}
+              >
+                <Link
+                  href={href}
+                  aria-current={isCurrent(href) ? "page" : undefined}
+                  className={`${pillBase} ${isCurrent(href) || active === key ? pillActive : pillIdle}`}
                 >
-
-                  <Link href={`/category/${item.category_slug}`} className="cursor-pointer flex items-center gap-1.5 h-full">
-                    {item.title}
+                  {item.title}
+                  {groups.length > 0 && (
                     <ChevronDown
                       size={12}
                       className={`transition-transform duration-300 ${active === key ? "rotate-180" : ""}`}
                     />
-                  </Link>
+                  )}
+                </Link>
 
-                  <AnimatePresence>
-                    {active === key && item.attributes.map((attr, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute top-full left-0 bg-white shadow-lg border border-zinc-100 w-max min-w-50 rounded-md overflow-hidden"
-                      >
-                        {attr.values.map((sub, j) => (
-                          <Link
-                            key={j}
-                            href={`/category/${item.category_slug}/${sub.slug}/${attr.slug}` || "#"}
-                            className="px-4 py-2 flex items-center gap-1.5 hover:text-primary-500 transition-colors duration-300 text-zinc-600 text-sm group/sub hover:bg-primary-50"
-                          >
-                            <ChevronRight
-                              size={10}
-                              className='group-hover/sub:translate-x-0.5 transition-transform duration-300'
-                            />
-                            {sub.name}
-                          </Link>
-                        ))}
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                <AnimatePresence>
+                  {active === key && groups.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute top-full left-0 z-50 bg-white shadow-lg border border-zinc-100 w-max min-w-50 rounded-md overflow-hidden py-1"
+                    >
+                      {groups.map((attr, aIdx) => (
+                        <div key={aIdx}>
+                          {groups.length > 1 && (
+                            <p className="px-4 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                              {attr.title}
+                            </p>
+                          )}
+                          {attr.values.map((sub, j) => (
+                            <Link
+                              key={j}
+                              href={`/category/${item.category_slug}/${sub.slug}/${attr.slug}`}
+                              className="px-4 py-2 flex items-center gap-1.5 hover:text-primary-500 transition-colors duration-300 text-zinc-600 text-sm font-medium group/sub hover:bg-primary-50"
+                            >
+                              <ChevronRight
+                                size={10}
+                                className='group-hover/sub:translate-x-0.5 transition-transform duration-300'
+                              />
+                              {sub.name}
+                            </Link>
+                          ))}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )
+          })}
 
-                  <AnimatePresence mode='popLayout'>
-                    {active === key && (
-                      <motion.span
-                        layoutId="nav-hover"
-                        className="absolute inset-x-0 bottom-0 bg-primary-600 h-0.5 rounded-full"
-                        initial={{ opacity: 0, scale: 0.97 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        transition={{ type: "tween", ease: [0.22, 1, 0.36, 1], duration: 0.5 }}
-                      />
-                    )}
-                  </AnimatePresence>
-                </div>
-              )
-            })
-          }
+          {PrimaryStaticItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              aria-current={isCurrent(item.path) ? "page" : undefined}
+              className={`${pillBase} ${isCurrent(item.path) ? pillActive : pillIdle}`}
+            >
+              {item.name}
+            </Link>
+          ))}
 
-          {
-            MenuItems.map((items, idx) => {
-              const key = `static-bottom-${idx}`
-
-              return (
-                <div
-                  key={items.name}
-                  className={`${idx === MenuItems.length - 1 ? "ml-auto" : ""} h-full relative px-1.5 group flex items-center text-sm font-medium text-primary-500`}
-                  onMouseEnter={() => setActive(key)}
-                  onMouseLeave={() => setActive(null)}
-                >
-                  <Link
-                    href={items.path}
-                    className='h-full flex items-center gap-1.5'
-                  >
-                    {/* {idx === MenuItems.length - 1 && <Sprout size={16} />} */}
-                    {items.name}
-                  </Link>
-                  <AnimatePresence mode='popLayout'>
-                    {active === key && (
-                      <motion.span
-                        layoutId="nav-hover"
-                        className="absolute inset-x-0 bottom-0 bg-primary-600 h-0.5 rounded-full"
-                        initial={{ opacity: 0, scale: 0.97 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        transition={{ type: "tween", ease: [0.22, 1, 0.36, 1], duration: 0.5 }}
-                      />
-                    )}
-                  </AnimatePresence>
-                </div>
-              )
-            })
-          }
-
-          <Link href={"/novasac-recycling"}
-            className="relative hidden md:flex items-center justify-center w-10 h-10 ">
-            {/* <Recycle className="text-white" size={28} strokeWidth={1} fill='white' /> */}
+          <Link
+            href={"/novasac-recycling"}
+            aria-label="Novasac Recycling"
+            className="ml-auto flex items-center justify-center w-10 h-10 shrink-0"
+          >
             <Image
               src="/images/recycle.png"
               alt="Recycle"
@@ -161,33 +158,25 @@ export default function DesktopHeader() {
               className='size-8'
             />
           </Link>
-
         </div>
+      </nav>
 
-        {/* <AnimatePresence mode='wait'>
-          {
-            scrolled && (
-              <motion.div className='flex items-center gap-3'
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 1 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ ease: 'easeInOut', duration: 0.2 }}
+      {/* Row 2 — secondary */}
+      <div className={`relative z-10 ${scrolled ? "bg-zinc-50/90 backdrop-blur-md" : "bg-zinc-50"} border-b border-zinc-200 lg:px-12 md:px-10 px-8 h-9`}>
+        <ul className='w-full max-w-7xl mx-auto flex items-center h-full gap-1'>
+          {SecondaryMenuItems.map((item, idx) => (
+            <li key={item.path} className="flex items-center h-full">
+              {idx > 0 && <span aria-hidden="true" className="mx-2 size-1 rounded-full bg-zinc-300" />}
+              <Link
+                href={item.path}
+                aria-current={isCurrent(item.path) ? "page" : undefined}
+                className={`text-[13px] font-medium transition-colors duration-200 hover:text-primary-600 ${isCurrent(item.path) ? "text-primary-600" : "text-zinc-600"}`}
               >
-                <button className="cursor-pointer">
-                  <Heart className="text-primary-500" size={28} strokeWidth={1} fill='#ff710a' />
-                </button>
-
-                <button className="cursor-pointer">
-                  <ShoppingCart className="text-primary-500" size={28} strokeWidth={1} fill='#ff710a' />
-                </button>
-
-                <button className="cursor-pointer">
-                  <User className="text-primary-500" size={28} strokeWidth={1} fill='#ff710a' />
-                </button>
-              </motion.div>
-            )
-          }
-        </AnimatePresence> */}
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

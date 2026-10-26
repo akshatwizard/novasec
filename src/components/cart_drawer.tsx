@@ -103,20 +103,24 @@ export default function CartDrawer() {
                                                     alt={item.title}
                                                     fill
                                                     sizes="80px"
-                                                    className="object-cover object-[85%_center]"
+                                                    className="object-contain"
                                                 />
                                             </div>
                                             <div className="flex min-w-0 flex-1 flex-col gap-2">
                                                 <div>
                                                     <p className="text-sm font-semibold leading-snug text-zinc-900">{item.title}</p>
-                                                    <p className="mt-0.5 text-xs text-zinc-500">Size: {item.size}</p>
+                                                    {(item.size || item.sku) && (
+                                                        <p className="mt-0.5 text-xs text-zinc-500">
+                                                            {[item.size && `Size: ${item.size}`, item.sku && `SKU: ${item.sku}`].filter(Boolean).join(' · ')}
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <div className="mt-auto flex items-center justify-between gap-3">
                                                     <QuantityStepper
                                                         compact
                                                         value={item.qty}
                                                         onChange={(qty) => setItemQty(item.id, qty)}
-                                                        label={`Quantity of ${item.title}, size ${item.size}`}
+                                                        label={item.size ? `Quantity of ${item.title}, size ${item.size}` : `Quantity of ${item.title}`}
                                                     />
                                                     <button
                                                         type="button"

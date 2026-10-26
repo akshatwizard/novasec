@@ -16,9 +16,12 @@ export interface CartItem {
     id: string
     productId: string
     title: string
+    /** Empty when the product has no size choice. */
     size: string
     qty: number
     image: string
+    /** Optional product reference shown in the cart and sent with the order. */
+    sku?: string
 }
 
 interface CartState {
@@ -50,7 +53,8 @@ function isCartItem(value: unknown): value is CartItem {
         typeof v.title === 'string' &&
         typeof v.size === 'string' &&
         typeof v.image === 'string' &&
-        typeof v.qty === 'number'
+        typeof v.qty === 'number' &&
+        (v.sku === undefined || typeof v.sku === 'string')
     )
 }
 

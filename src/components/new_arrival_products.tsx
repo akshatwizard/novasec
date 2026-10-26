@@ -3,7 +3,9 @@
 import Section from './ui/section'
 import Wrapper from './ui/wrapper'
 import { Heading, SubHeading } from './ui/headings'
-import ProductCard from './product_card'
+import { useState } from 'react'
+import HomeProductCard, { productImage } from './home_product_card'
+import OrderRequestModal from './order_request_modal'
 import Link from 'next/link'
 import { ChevronRight, PackageSearch } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query';
@@ -11,7 +13,14 @@ import axios from 'axios';
 import { ProductData, ProductResponse } from '@/types/home_product.types';
 
 
-export default function Products() {
+type Props = {
+    /** Show only the first N products and a link to the full list (used on the homepage). */
+    limit?: number
+}
+
+export default function Products({ limit }: Props) {
+    const [buyProduct, setBuyProduct] = useState<ProductData | null>(null)
+
     const { data, isLoading, error } = useQuery<ProductData[]>({
         queryKey: ["new_arrival_products"],
         queryFn: async () => {
@@ -32,9 +41,9 @@ export default function Products() {
                     </SubHeading>
                 </div>
 
-                <div className="w-full grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 lg:gap-4 md:gap-3 gap-2 lg:gap-y-10 md:gap-y-6 gap-y-4">
+                <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {isLoading ? (
-                        Array.from({ length: 10 }).map((_, i) => (
+                        Array.from({ length: limit ?? 8 }).map((_, i) => (
                             <ProductCardSkeleton key={i} />
                         ))
                     ) : error ? (
@@ -42,20 +51,37 @@ export default function Products() {
                     ) : !data?.length ? (
                         <EmptyState message="No products found." />
                     ) : (
-                        data.map((product) => (
-                            <ProductCard product={product} key={product.id} />
+                        (limit ? data.slice(0, limit) : data).map((product) => (
+                            <HomeProductCard product={product} onBuyNow={setBuyProduct} key={product.id} />
                         ))
                     )}
                 </div>
+
+                {limit && data && data.length > limit && (
+                    <Link
+                        href="/popular-products"
+                        className="mx-auto -mt-4 inline-flex items-center gap-1 rounded-full border border-primary-200 bg-primary-50 px-5 py-2 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-500 hover:text-white"
+                    >
+                        View all popular products
+                        <ChevronRight size={16} />
+                    </Link>
+                )}
             </Wrapper>
+
+            {buyProduct && (
+                <OrderRequestModal
+                    items={[{ title: buyProduct.title, size: '', qty: 1, image: productImage(buyProduct), sku: buyProduct.sku ?? undefined }]}
+                    onClose={() => setBuyProduct(null)}
+                />
+            )}
         </Section>
     );
 }
 
 function ProductCardSkeleton() {
     return (
-        <div className="w-full rounded-xl border border-gray-100 bg-white overflow-hidden animate-pulse">
-            <div className="h-50 bg-zinc-200" />
+        <div className="w-full rounded-2xl border border-gray-100 bg-white overflow-hidden animate-pulse">
+            <div className="h-48 bg-zinc-200" />
             <div className="p-3 space-y-2">
                 <div className="h-3 w-1/2 bg-zinc-200 rounded-full" />
                 <div className="h-4 w-3/4 bg-zinc-200 rounded" />

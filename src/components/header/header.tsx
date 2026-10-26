@@ -15,6 +15,9 @@ import MobileSearch from '../mobile_search';
 import { AnimatePresence, Variants, motion } from 'motion/react';
 import { cartCount, openCart, useCart } from '@/lib/cart_store';
 
+// Opens a WhatsApp chat with Novasac (+34 628 188 044): the app on phones, WhatsApp Web on desktop.
+const WHATSAPP_URL = `https://wa.me/34628188044?text=${encodeURIComponent('Hello Novasac, I would like some information.')}`;
+
 
 const containerVariants: Variants = {
     hide: {
@@ -150,13 +153,21 @@ export default function Header() {
                     />
 
                     <div className="relative flex items-center gap-2" ref={dropdownRef}>
-                        <Image
-                            src={"/images/wap.png"}
-                            alt='Contact us'
-                            width={20}
-                            height={20}
-                            className='size-7 cursor-pointer'
-                        />
+                        <a
+                            href={WHATSAPP_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Chat with us on WhatsApp"
+                            className="flex items-center justify-center w-10 h-10 rounded-sm transition-colors duration-300 ease-in-out hover:bg-primary-400"
+                        >
+                            <Image
+                                src={"/images/wap.png"}
+                                alt=''
+                                width={20}
+                                height={20}
+                                className='size-7'
+                            />
+                        </a>
 
                         <button name='Shopping cart' onClick={openCart} className="relative hidden md:flex items-center justify-center w-10 h-10 rounded-sm transition-colors duration-300 ease-in-out hover:bg-primary-400 cursor-pointer">
                             <ShoppingCart className="text-white" size={28} strokeWidth={1} fill='white' />

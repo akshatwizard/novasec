@@ -21,6 +21,7 @@ export interface OrderLine {
     size: string
     qty: number
     image: string
+    sku?: string
 }
 
 interface OrderRequestModalProps {
@@ -62,7 +63,7 @@ export default function OrderRequestModal({ items, onClose, onSent }: OrderReque
                 'Order request (online store, novasac.eu).',
                 '',
                 'Items:',
-                ...items.map((item) => `- ${item.qty} × ${item.title} — Size: ${item.size}`),
+                ...items.map((item) => [`- ${item.qty} × ${item.title}`, item.size && `Size: ${item.size}`, item.sku && `SKU: ${item.sku}`].filter(Boolean).join(' — ')),
             ]
             if (form.company.trim()) lines.push('', `Company: ${form.company.trim()}`)
             if (form.note.trim()) lines.push('', 'Customer note:', form.note.trim())
@@ -145,12 +146,16 @@ export default function OrderRequestModal({ items, onClose, onSent }: OrderReque
                                             alt=""
                                             fill
                                             sizes="48px"
-                                            className="object-cover object-[85%_center]"
+                                            className="object-contain"
                                         />
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <p className="truncate font-serif text-[13px] font-medium text-stone-800">{item.title}</p>
-                                        <p className="mt-0.5 text-[11px] tracking-wide text-stone-500">Size: {item.size}</p>
+                                        {(item.size || item.sku) && (
+                                            <p className="mt-0.5 text-[11px] tracking-wide text-stone-500">
+                                                {[item.size && `Size: ${item.size}`, item.sku && `SKU: ${item.sku}`].filter(Boolean).join(' · ')}
+                                            </p>
+                                        )}
                                     </div>
                                     <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-stone-700">
                                         × {item.qty}
