@@ -12,6 +12,8 @@ type Props = {
     onBuyNow: (product: ProductData) => void;
     /** Image beside the text instead of on top — used for the featured card in the categories grid. */
     horizontal?: boolean;
+    /** Smaller card for the homepage Popular Products strip (shorter image, no SKU, smaller buttons). */
+    compact?: boolean;
 };
 
 export const productHref = (product: ProductData) =>
@@ -35,7 +37,7 @@ const formatEUR = (n: number) =>
  * Popular-products card in the same style as the catalog listing card, plus Add to Cart and
  * Buy Now. The price is the product's EUR price, or "Price on request" when none is set.
  */
-export default function HomeProductCard({ product, onBuyNow, horizontal }: Props) {
+export default function HomeProductCard({ product, onBuyNow, horizontal, compact }: Props) {
     const href = productHref(product);
     const price = product.mrp && product.mrp > 0 ? product.mrp : null;
 
@@ -58,7 +60,7 @@ export default function HomeProductCard({ product, onBuyNow, horizontal }: Props
             {/* Square frame: product photos (mostly portrait or square) fill it instead of floating in a short, wide strip */}
             <Link
                 href={href}
-                className={`relative shrink-0 overflow-hidden bg-white ${horizontal ? "w-32 sm:w-40 self-stretch min-h-32" : "aspect-square w-full"}`}
+                className={`relative shrink-0 overflow-hidden bg-white ${horizontal ? "w-32 sm:w-40 self-stretch min-h-32" : compact ? "aspect-[5/4] w-full" : "aspect-square w-full"}`}
                 tabIndex={-1}
                 aria-hidden="true"
             >
@@ -72,14 +74,14 @@ export default function HomeProductCard({ product, onBuyNow, horizontal }: Props
             </Link>
 
             {/* Content */}
-            <div className={`flex flex-col flex-1 min-w-0 space-y-2 ${horizontal ? "p-3 sm:p-4" : "px-4 py-4"}`}>
+            <div className={`flex flex-col flex-1 min-w-0 ${compact ? "gap-1.5 p-3" : "space-y-2"} ${horizontal ? "p-3 sm:p-4" : compact ? "" : "px-4 py-4"}`}>
                 <Link href={href}>
-                    <h3 className="text-[15px] font-semibold text-gray-800 leading-snug transition hover:text-primary-600 line-clamp-2">
+                    <h3 className={`${compact ? "text-sm" : "text-[15px]"} font-semibold text-gray-800 leading-snug transition hover:text-primary-600 line-clamp-2`}>
                         {product.title}
                     </h3>
                 </Link>
 
-                {product.sku && (
+                {product.sku && !compact && (
                     <p className="text-[10px] text-gray-400 tracking-wide">
                         SKU · {product.sku}
                     </p>
@@ -89,13 +91,13 @@ export default function HomeProductCard({ product, onBuyNow, horizontal }: Props
 
                 {/* Price */}
                 {price !== null ? (
-                    <span className="text-lg font-semibold text-gray-900">{formatEUR(price)}</span>
+                    <span className={`${compact ? "text-base" : "text-lg"} font-semibold text-gray-900`}>{formatEUR(price)}</span>
                 ) : (
                     <span className="text-xs text-gray-400 italic">Price on request</span>
                 )}
 
                 {/* Actions */}
-                <div className={`grid gap-2 pt-1 ${horizontal ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 xl:grid-cols-2"}`}>
+                <div className={`grid ${compact ? "gap-1.5 [&>button]:py-1.5 [&>button]:text-[11px]" : "gap-2 pt-1"} ${horizontal ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 xl:grid-cols-2"}`}>
                     <button
                         type="button"
                         onClick={handleAddToCart}
