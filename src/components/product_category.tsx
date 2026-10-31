@@ -4,10 +4,15 @@ import Section from './ui/section'
 import Wrapper from './ui/wrapper'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, PackageSearch } from 'lucide-react'
+import { ChevronRight, PackageSearch, Sparkles } from 'lucide-react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { HomeCategoryData, HomeCategoryResponse } from '@/types/home_category.types';
+import { ProductData } from '@/types/home_product.types';
+import HomeProductCard, { productImage } from './home_product_card'
+import OrderRequestModal from './order_request_modal'
+import { usePopularProducts } from './new_arrival_products'
 
 
 // Two-line descriptions for the category cards, matched on the category slug/title from the API.
@@ -32,7 +37,8 @@ const RECYCLED_CARD = {
 
 /**
  * Opening section of the homepage: the four product categories (from the API) plus Recycled
- * Bags, as five fixed cards with a short description each. No slider.
+ * Bags, as fixed cards with a short description each, plus a sixth card showing a random
+ * product from Popular Products. Two rows of three on desktop. No slider.
  */
 export default function ProductCategory() {
 
@@ -45,6 +51,13 @@ export default function ProductCategory() {
             return res.data.data;
         },
     });
+
+    // Sixth block: one popular product, picked at random per visit. The products are fetched in
+    // the browser, so this never affects the server render or hydration.
+    const { data: popular } = usePopularProducts();
+    const [seed] = useState(() => Math.random());
+    const featured = popular?.length ? popular[Math.floor(seed * popular.length)] : null;
+    const [buyProduct, setBuyProduct] = useState<ProductData | null>(null);
 
     return (
         <Section>
@@ -65,7 +78,7 @@ export default function ProductCategory() {
 
                 {isLoading ? (
                     <div className={gridCls}>
-                        {Array.from({ length: 5 }).map((_, i) => (
+                        {Array.from({ length: 6 }).map((_, i) => (
                             <CategoryCardSkeleton key={i} />
                         ))}
                     </div>
@@ -93,22 +106,39 @@ export default function ProductCategory() {
                             text={RECYCLED_CARD.text}
                             badge="EN 15343"
                         />
+                        {featured && (
+                            <div className="relative flex flex-col [&>*:last-child]:flex-1">
+                                <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-primary-500 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-white shadow-sm">
+                                    <Sparkles size={12} />
+                                    Featured product
+                                </span>
+                                <HomeProductCard product={featured} onBuyNow={setBuyProduct} large />
+                            </div>
+                        )}
                     </div>
                 )}
 
             </Wrapper>
+
+            {buyProduct && (
+                <OrderRequestModal
+                    items={[{ title: buyProduct.title, size: '', qty: 1, image: productImage(buyProduct), sku: buyProduct.sku ?? undefined }]}
+                    onClose={() => setBuyProduct(null)}
+                />
+            )}
         </Section>
     );
 }
 
-// Five across on desktop; on phones the fifth card spans the full row instead of sitting alone.
+// Two rows of three on tablet/desktop, two per row on phones. If the featured product is missing
+// (five cards), the last card spans the row on phones instead of sitting alone.
 const gridCls =
-    "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1";
+    "grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1";
 
 function CategoryCardSkeleton() {
     return (
         <div className="rounded-xl bg-white border border-zinc-100 overflow-hidden animate-pulse">
-            <div className="aspect-[4/3] bg-zinc-200" />
+            <div className="aspect-[16/10] bg-zinc-200" />
             <div className="p-4 space-y-2">
                 <div className="h-4 bg-zinc-200 rounded w-3/4" />
                 <div className="h-3 bg-zinc-100 rounded w-full" />
@@ -134,14 +164,14 @@ function CategoryCard({ href, title, image, text, badge, priority }: CategoryCar
             className="group relative flex flex-col rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
         >
             {/* Whole picture shown (no cropping), on a light background */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-zinc-50">
+            <div className="relative aspect-[16/10] overflow-hidden bg-zinc-50">
                 <Image
                     src={image}
                     alt={title}
                     fill
                     priority={priority}
                     className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    sizes="(max-width: 768px) 50vw, 33vw"
                 />
             </div>
 

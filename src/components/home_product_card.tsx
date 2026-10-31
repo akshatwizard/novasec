@@ -10,6 +10,8 @@ type Props = {
     product: ProductData;
     /** Opens the order request form for this product. */
     onBuyNow: (product: ProductData) => void;
+    /** Bigger image and title, for the featured card in the categories grid. */
+    large?: boolean;
 };
 
 export const productHref = (product: ProductData) =>
@@ -33,7 +35,7 @@ const formatEUR = (n: number) =>
  * Popular-products card in the same style as the catalog listing card, plus Add to Cart and
  * Buy Now. The price is the product's EUR price, or "Price on request" when none is set.
  */
-export default function HomeProductCard({ product, onBuyNow }: Props) {
+export default function HomeProductCard({ product, onBuyNow, large }: Props) {
     const href = productHref(product);
     const price = product.mrp && product.mrp > 0 ? product.mrp : null;
 
@@ -53,7 +55,7 @@ export default function HomeProductCard({ product, onBuyNow }: Props) {
         <div className="group relative flex flex-col rounded-2xl border border-black/10 bg-white/70 backdrop-blur-md shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary-300 overflow-hidden">
 
             {/* Image */}
-            <Link href={href} className="relative h-48 flex items-center justify-center overflow-hidden" tabIndex={-1} aria-hidden="true">
+            <Link href={href} className={`relative ${large ? "h-60 md:h-72" : "h-48"} flex items-center justify-center overflow-hidden`} tabIndex={-1} aria-hidden="true">
                 <Image
                     src={productImage(product)}
                     alt={product.title}
@@ -67,7 +69,7 @@ export default function HomeProductCard({ product, onBuyNow }: Props) {
             {/* Content */}
             <div className="flex flex-col flex-1 px-4 py-4 space-y-2">
                 <Link href={href}>
-                    <h3 className="text-[14px] font-medium text-gray-800 leading-snug transition hover:text-primary-600 line-clamp-2">
+                    <h3 className={`${large ? "text-base md:text-lg font-semibold" : "text-[14px] font-medium"} text-gray-800 leading-snug transition hover:text-primary-600 line-clamp-2`}>
                         {product.title}
                     </h3>
                 </Link>
