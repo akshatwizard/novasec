@@ -10,8 +10,8 @@ type Props = {
     product: ProductData;
     /** Opens the order request form for this product. */
     onBuyNow: (product: ProductData) => void;
-    /** Bigger image and title, for the featured card in the categories grid. */
-    large?: boolean;
+    /** Image beside the text instead of on top — used for the featured card in the categories grid. */
+    horizontal?: boolean;
 };
 
 export const productHref = (product: ProductData) =>
@@ -35,7 +35,7 @@ const formatEUR = (n: number) =>
  * Popular-products card in the same style as the catalog listing card, plus Add to Cart and
  * Buy Now. The price is the product's EUR price, or "Price on request" when none is set.
  */
-export default function HomeProductCard({ product, onBuyNow, large }: Props) {
+export default function HomeProductCard({ product, onBuyNow, horizontal }: Props) {
     const href = productHref(product);
     const price = product.mrp && product.mrp > 0 ? product.mrp : null;
 
@@ -52,24 +52,29 @@ export default function HomeProductCard({ product, onBuyNow, large }: Props) {
         );
 
     return (
-        <div className="group relative flex flex-col rounded-2xl border border-black/10 bg-white/70 backdrop-blur-md shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary-300 overflow-hidden">
+        <div className={`group relative flex ${horizontal ? "flex-row" : "flex-col"} rounded-2xl border border-black/10 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary-300 overflow-hidden`}>
 
             {/* Image */}
-            <Link href={href} className={`relative ${large ? "h-60 md:h-72" : "h-48"} flex items-center justify-center overflow-hidden`} tabIndex={-1} aria-hidden="true">
+            {/* Square frame: product photos (mostly portrait or square) fill it instead of floating in a short, wide strip */}
+            <Link
+                href={href}
+                className={`relative shrink-0 overflow-hidden bg-white ${horizontal ? "w-32 sm:w-40 self-stretch min-h-32" : "aspect-square w-full"}`}
+                tabIndex={-1}
+                aria-hidden="true"
+            >
                 <Image
                     src={productImage(product)}
                     alt={product.title}
-                    width={400}
-                    height={300}
-                    className="object-contain h-full w-full transition-transform duration-700 ease-out group-hover:scale-110"
-                    loading="lazy"
+                    fill
+                    sizes={horizontal ? "160px" : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"}
+                    className={`object-contain ${horizontal ? "p-1" : "p-2"} transition-transform duration-700 ease-out group-hover:scale-105`}
                 />
             </Link>
 
             {/* Content */}
-            <div className="flex flex-col flex-1 px-4 py-4 space-y-2">
+            <div className={`flex flex-col flex-1 min-w-0 space-y-2 ${horizontal ? "p-3 sm:p-4" : "px-4 py-4"}`}>
                 <Link href={href}>
-                    <h3 className={`${large ? "text-base md:text-lg font-semibold" : "text-[14px] font-medium"} text-gray-800 leading-snug transition hover:text-primary-600 line-clamp-2`}>
+                    <h3 className="text-[15px] font-semibold text-gray-800 leading-snug transition hover:text-primary-600 line-clamp-2">
                         {product.title}
                     </h3>
                 </Link>
@@ -90,7 +95,7 @@ export default function HomeProductCard({ product, onBuyNow, large }: Props) {
                 )}
 
                 {/* Actions */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-2 pt-1">
+                <div className={`grid gap-2 pt-1 ${horizontal ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 xl:grid-cols-2"}`}>
                     <button
                         type="button"
                         onClick={handleAddToCart}

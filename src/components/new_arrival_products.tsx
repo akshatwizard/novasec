@@ -81,18 +81,18 @@ export default function Products({ limit }: Props) {
 /** Banner-style heading for the Popular Products section. */
 function PopularBanner({ showCta }: { showCta: boolean }) {
     return (
-        <div className="relative w-full overflow-hidden rounded-3xl bg-linear-to-br from-primary-600 via-primary-500 to-primary-400 px-6 py-8 text-white shadow-lg shadow-primary-500/20 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+        <div className="relative w-full overflow-hidden rounded-3xl bg-linear-to-br from-primary-600 via-primary-500 to-primary-400 px-6 py-7 text-white shadow-lg shadow-primary-500/20 sm:px-10 sm:py-8 lg:px-12 lg:py-9">
             {/* decorative rings */}
             <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border-[40px] border-white/10" />
             <span aria-hidden="true" className="pointer-events-none absolute -bottom-28 right-40 size-56 rounded-full border-[28px] border-white/10 max-md:hidden" />
 
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                <div className="flex max-w-2xl flex-col gap-3">
+                <div className="flex max-w-2xl flex-col gap-2.5">
                     <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-sm">
                         <span className="size-1.5 rounded-full bg-white" />
                         Best sellers
                     </span>
-                    <h2 className="lg:text-6xl md:text-5xl text-4xl font-light leading-tight">
+                    <h2 className="lg:text-5xl md:text-4xl text-3xl font-light leading-tight">
                         Popular <em className="font-normal">Products</em>
                     </h2>
                     <p className="text-pretty text-white/90 md:text-lg text-base">
