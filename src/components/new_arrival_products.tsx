@@ -5,6 +5,7 @@ import Wrapper from './ui/wrapper'
 import { useState } from 'react'
 import HomeProductCard, { productImage } from './home_product_card'
 import OrderRequestModal from './order_request_modal'
+import SliderWrapper from './ui/slider_wrapper'
 import Link from 'next/link'
 import { ArrowRight, Clock, PackageSearch, ShoppingCart } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query';
@@ -56,9 +57,29 @@ export default function Products({ limit }: Props) {
                 <Wrapper className="lg:pt-8 md:pt-6 sm:pt-5 pt-4 lg:pb-8 md:pb-6 pb-5">
                     <div className="grid grid-cols-1 gap-3 lg:grid-cols-[290px_minmax(0,1fr)] lg:gap-4">
                         <PopularBanner compact />
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            {grid}
-                        </div>
+                        {products.length > 0 ? (
+                            /* 8 products, auto-scrolling (loops; pauses while hovered; arrows to browse) */
+                            <div className="min-w-0">
+                                <SliderWrapper
+                                    autoPlay
+                                    autoPlayOptions={{ delay: 2500, stopOnMouseEnter: true, stopOnInteraction: false }}
+                                    options={{ loop: true, align: 'start' }}
+                                    className="-ml-3"
+                                    viewportClassName="py-1 -my-1"
+                                    slideClassName="flex basis-1/2 pl-3 md:basis-1/4 [&>*]:flex-1 [&>*]:min-w-0"
+                                    btnLeft="left-1 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
+                                    btnRight="right-1 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
+                                >
+                                    {products.map((product) => (
+                                        <HomeProductCard key={product.id} product={product} onBuyNow={setBuyProduct} compact />
+                                    ))}
+                                </SliderWrapper>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                {grid}
+                            </div>
+                        )}
                     </div>
                 </Wrapper>
             ) : (

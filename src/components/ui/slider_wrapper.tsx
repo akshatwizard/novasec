@@ -14,17 +14,22 @@ type PropType = {
     btnLeft?: string;
     btnRight?: string
     autoPlay?: boolean;
+    /** Autoplay settings (delay in ms, pause on hover). Defaults keep the previous behaviour. */
+    autoPlayOptions?: { delay?: number; stopOnMouseEnter?: boolean; stopOnInteraction?: boolean };
+    viewportClassName?: string;
+    /** Classes for each slide, e.g. a flex-basis to show a fixed number per view. */
+    slideClassName?: string;
 };
 
-export default function SliderWrapper({ children, options, className, btnLeft, btnRight, autoPlay }: PropType) {
-    const [emblaRef, emblaApi] = useEmblaCarousel(options, autoPlay ? [Autoplay({ delay: 3000 })] : []);
+export default function SliderWrapper({ children, options, className, btnLeft, btnRight, autoPlay, autoPlayOptions, viewportClassName, slideClassName }: PropType) {
+    const [emblaRef, emblaApi] = useEmblaCarousel(options, autoPlay ? [Autoplay({ delay: 3000, ...autoPlayOptions })] : []);
     const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } = usePrevNextButtons(emblaApi)
     return (
         <section className="embla relative">
-            <div className="embla__viewport overflow-hidden py-5" ref={emblaRef}>
+            <div className={cn("embla__viewport overflow-hidden py-5", viewportClassName)} ref={emblaRef}>
                 <div className={cn("embla__container flex", className)}>
                     {Children.map(children, (child, index) => (
-                        <div className="embla__slide shrink-0" key={index}>
+                        <div className={cn("embla__slide shrink-0", slideClassName)} key={index}>
                             {child}
                         </div>
                     ))}

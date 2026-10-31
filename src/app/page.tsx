@@ -18,7 +18,7 @@ import WhyChooseUs from '@/components/why_choose_us'
 export default function Home() {
   return (
     <main className='overflow-hidden'>
-      <Products limit={4} />
+      <Products limit={8} />
       <ProductCategory />
       <BentoGrid />
       <RecycledBagsSection />
