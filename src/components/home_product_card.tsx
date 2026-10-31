@@ -39,7 +39,11 @@ const formatEUR = (n: number) =>
  */
 export default function HomeProductCard({ product, onBuyNow, horizontal, compact }: Props) {
     const href = productHref(product);
-    const price = product.mrp && product.mrp > 0 ? product.mrp : null;
+    // Use whichever price the backend has filled in (mrp first, as on the catalog cards).
+    const price =
+        product.mrp && product.mrp > 0 ? product.mrp
+            : product.offer_rate && product.offer_rate > 0 ? product.offer_rate
+                : null;
 
     const handleAddToCart = () =>
         addToCart(
@@ -91,9 +95,9 @@ export default function HomeProductCard({ product, onBuyNow, horizontal, compact
 
                 {/* Price */}
                 {price !== null ? (
-                    <span className={`${compact ? "text-base" : "text-lg"} font-semibold text-gray-900`}>{formatEUR(price)}</span>
+                    <span className={`${compact ? "text-base" : "text-lg"} font-bold text-zinc-900`}>{formatEUR(price)}</span>
                 ) : (
-                    <span className="text-xs text-gray-400 italic">Price on request</span>
+                    <span className="text-sm font-semibold text-zinc-500">Price on request</span>
                 )}
 
                 {/* Actions */}

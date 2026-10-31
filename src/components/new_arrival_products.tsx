@@ -46,41 +46,60 @@ export default function Products({ limit }: Props) {
         <EmptyState message="No products found." />
     ) : (
         products.map((product) => (
-            <HomeProductCard product={product} onBuyNow={setBuyProduct} compact={Boolean(limit)} key={product.id} />
+            <HomeProductCard product={product} onBuyNow={setBuyProduct} key={product.id} />
         ))
     )
 
     return (
         <Section>
             {limit ? (
-                /* Homepage: compact strip — banner panel beside one row of products */
-                <Wrapper className="lg:pt-8 md:pt-6 sm:pt-5 pt-4 lg:pb-8 md:pb-6 pb-5">
-                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-[290px_minmax(0,1fr)] lg:gap-4">
-                        <PopularBanner compact />
-                        {products.length > 0 ? (
-                            /* 8 products, auto-scrolling (loops; pauses while hovered; arrows to browse) */
-                            <div className="min-w-0">
-                                <SliderWrapper
-                                    autoPlay
-                                    autoPlayOptions={{ delay: 2500, stopOnMouseEnter: true, stopOnInteraction: false }}
-                                    options={{ loop: true, align: 'start' }}
-                                    className="-ml-3"
-                                    viewportClassName="py-1 -my-1"
-                                    slideClassName="flex basis-1/2 pl-3 md:basis-1/4 [&>*]:flex-1 [&>*]:min-w-0"
-                                    btnLeft="left-1 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
-                                    btnRight="right-1 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
-                                >
-                                    {products.map((product) => (
-                                        <HomeProductCard key={product.id} product={product} onBuyNow={setBuyProduct} compact />
-                                    ))}
-                                </SliderWrapper>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                {grid}
-                            </div>
-                        )}
+                /* Homepage: same layout as the categories section — heading, then horizontal cards
+                   (image beside the text), auto-scrolling: 3 per view on desktop, 2 on tablet, 1 on phones */
+                <Wrapper className="lg:gap-7 md:gap-6 gap-5 lg:pt-8 md:pt-6 pt-5 lg:pb-10 md:pb-8 pb-6">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                        <div className="flex flex-col gap-3">
+                            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
+                                <span className="size-1.5 rounded-full bg-primary-500" />
+                                Popular Products
+                            </span>
+                            <h2 className="lg:text-[44px] md:text-4xl text-3xl leading-tight font-light text-zinc-900">
+                                Best sellers, <em className="text-primary-500">ready to order</em>
+                            </h2>
+                            <p className="max-w-2xl text-pretty text-zinc-600 md:text-lg text-base">
+                                Add to cart or buy now — we confirm price and delivery within 1 business day.
+                            </p>
+                        </div>
+                        <Link
+                            href="/popular-products"
+                            className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full border border-primary-200 bg-primary-50 px-5 py-2 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-500 hover:text-white"
+                        >
+                            View all products
+                            <ArrowRight size={15} />
+                        </Link>
                     </div>
+
+                    {products.length > 0 ? (
+                        <SliderWrapper
+                            autoPlay
+                            autoPlayOptions={{ delay: 3000, stopOnMouseEnter: true, stopOnInteraction: false }}
+                            options={{ loop: true, align: 'start' }}
+                            className="-ml-3 md:-ml-4"
+                            viewportClassName="py-1 -my-1"
+                            slideClassName="flex basis-full pl-3 md:basis-1/2 md:pl-4 lg:basis-1/3 [&>*]:flex-1 [&>*]:min-w-0"
+                            btnLeft="-left-3 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
+                            btnRight="-right-3 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
+                        >
+                            {products.map((product) => (
+                                <HomeProductCard key={product.id} product={product} onBuyNow={setBuyProduct} horizontal />
+                            ))}
+                        </SliderWrapper>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                            {isLoading
+                                ? Array.from({ length: 3 }).map((_, i) => <HorizontalSkeleton key={i} />)
+                                : grid}
+                        </div>
+                    )}
                 </Wrapper>
             ) : (
                 /* Full list page */
@@ -102,42 +121,8 @@ export default function Products({ limit }: Props) {
     );
 }
 
-/**
- * Banner-style heading for Popular Products. `compact` is the homepage panel that sits beside the
- * products (a short strip on phones); otherwise the wide banner of the full list page.
- */
-function PopularBanner({ compact }: { compact?: boolean }) {
-    if (compact) {
-        return (
-            <div className="relative flex overflow-hidden rounded-2xl bg-linear-to-br from-primary-600 via-primary-500 to-primary-400 px-5 py-5 text-white shadow-lg shadow-primary-500/20 lg:flex-col lg:justify-between lg:px-7 lg:py-7">
-                <span aria-hidden="true" className="pointer-events-none absolute -right-14 -top-16 size-48 rounded-full border-[28px] border-white/10" />
-                <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 -left-10 size-44 rounded-full border-[24px] border-white/10 max-lg:hidden" />
-
-                <div className="relative flex flex-1 items-center justify-between gap-4 lg:flex-col lg:items-start lg:justify-between">
-                    <div className="flex flex-col gap-1.5 lg:gap-3">
-                        <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em]">
-                            <span className="size-1.5 rounded-full bg-white" />
-                            Best sellers
-                        </span>
-                        <h2 className="lg:text-5xl text-3xl font-light leading-[1.05]">
-                            Popular <em className="font-normal">Products</em>
-                        </h2>
-                        <p className="hidden text-sm leading-relaxed text-white/90 lg:block">
-                            Ready to order — we confirm price and delivery within 1 business day. No payment until confirmed.
-                        </p>
-                    </div>
-                    <Link
-                        href="/popular-products"
-                        className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-700 shadow-md transition-transform hover:scale-105 lg:px-5 lg:py-2.5"
-                    >
-                        View all
-                        <ArrowRight size={15} />
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
+/** Banner-style heading for the full Popular Products page. */
+function PopularBanner() {
     return (
         <div className="relative w-full overflow-hidden rounded-3xl bg-linear-to-br from-primary-600 via-primary-500 to-primary-400 px-6 py-7 text-white shadow-lg shadow-primary-500/20 sm:px-10 sm:py-8 lg:px-12 lg:py-9">
             <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border-[40px] border-white/10" />
@@ -162,10 +147,23 @@ function PopularBanner({ compact }: { compact?: boolean }) {
     );
 }
 
+function HorizontalSkeleton() {
+    return (
+        <div className="flex rounded-2xl border border-gray-100 bg-white overflow-hidden animate-pulse">
+            <div className="w-32 sm:w-40 aspect-square bg-zinc-200 shrink-0" />
+            <div className="flex-1 p-4 space-y-2">
+                <div className="h-4 w-3/4 bg-zinc-200 rounded" />
+                <div className="h-5 w-1/3 bg-zinc-200 rounded" />
+                <div className="h-8 w-full bg-zinc-100 rounded-full" />
+            </div>
+        </div>
+    );
+}
+
 function ProductCardSkeleton() {
     return (
         <div className="w-full rounded-2xl border border-gray-100 bg-white overflow-hidden animate-pulse">
-            <div className="aspect-[5/4] bg-zinc-200" />
+            <div className="aspect-square bg-zinc-200" />
             <div className="p-3 space-y-2">
                 <div className="h-3 w-1/2 bg-zinc-200 rounded-full" />
                 <div className="h-4 w-3/4 bg-zinc-200 rounded" />
