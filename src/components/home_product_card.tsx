@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ShoppingCart, Zap } from "lucide-react";
 import { ProductData } from "@/types/home_product.types";
 import { addToCart } from "@/lib/cart_store";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProductDetail, productKeys } from "@/hooks/fetch_product";
 
 type Props = {
     product: ProductData;
@@ -25,6 +27,12 @@ export const productImage = (product: ProductData) => product.image ?? "/images/
 export const productCartId = (product: ProductData) =>
     `product-${product.id}-${product.attribute_value ?? product.attribute_value_slug ?? "default"}`;
 
+/** Prices can arrive as numbers or strings ("0.22"); anything not a positive number counts as no price. */
+const toPrice = (value: unknown): number | null => {
+    const n = typeof value === "string" ? parseFloat(value) : typeof value === "number" ? value : NaN;
+    return Number.isFinite(n) && n > 0 ? n : null;
+};
+
 const formatEUR = (n: number) =>
     new Intl.NumberFormat("en-DE", {
         style: "currency",
@@ -39,11 +47,19 @@ const formatEUR = (n: number) =>
  */
 export default function HomeProductCard({ product, onBuyNow, horizontal, compact }: Props) {
     const href = productHref(product);
-    // Use whichever price the backend has filled in (mrp first, as on the catalog cards).
-    const price =
-        product.mrp && product.mrp > 0 ? product.mrp
-            : product.offer_rate && product.offer_rate > 0 ? product.offer_rate
-                : null;
+    // The homepage list endpoint returns no prices, so when the list has none the card reads the
+    // product's details (the same request and cache as the product page) and shows that price.
+    const listPrice = toPrice(product.mrp) ?? toPrice(product.offer_rate);
+    const variant = product.attribute_value ?? product.attribute_value_slug;
+    const detailSlug = variant ? [product.slug, variant] : [product.slug];
+    const { data: detail, isLoading: priceLoading } = useQuery({
+        queryKey: productKeys.detail(detailSlug),
+        queryFn: () => fetchProductDetail(detailSlug),
+        enabled: listPrice === null,
+        staleTime: 10 * 60 * 1000,
+    });
+    const details = detail?.data?.product_details;
+    const price = listPrice ?? toPrice(details?.mrp) ?? toPrice(details?.offer_rate);
 
     const handleAddToCart = () =>
         addToCart(
@@ -94,7 +110,9 @@ export default function HomeProductCard({ product, onBuyNow, horizontal, compact
                 <div className="flex-1" />
 
                 {/* Price */}
-                {price !== null ? (
+                {price === null && priceLoading ? (
+                    <span className="h-6 w-20 animate-pulse rounded bg-zinc-100" aria-hidden="true" />
+                ) : price !== null ? (
                     <span className={`${compact ? "text-base" : "text-lg"} font-bold text-zinc-900`}>{formatEUR(price)}</span>
                 ) : (
                     <span className="text-sm font-semibold text-zinc-500">Price on request</span>
