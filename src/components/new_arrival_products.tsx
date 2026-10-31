@@ -5,7 +5,6 @@ import Wrapper from './ui/wrapper'
 import { useState } from 'react'
 import HomeProductCard, { productImage } from './home_product_card'
 import OrderRequestModal from './order_request_modal'
-import SliderWrapper from './ui/slider_wrapper'
 import Link from 'next/link'
 import { ArrowRight, Clock, PackageSearch, ShoppingCart } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query';
@@ -54,7 +53,7 @@ export default function Products({ limit }: Props) {
         <Section>
             {limit ? (
                 /* Homepage: same layout as the categories section — heading, then horizontal cards
-                   (image beside the text), auto-scrolling: 3 per view on desktop, 2 on tablet, 1 on phones */
+                   (image beside the text) in a fixed grid */
                 <Wrapper className="lg:gap-7 md:gap-6 gap-5 lg:pt-8 md:pt-6 pt-5 lg:pb-10 md:pb-8 pb-6">
                     <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div className="flex flex-col gap-3">
@@ -78,28 +77,16 @@ export default function Products({ limit }: Props) {
                         </Link>
                     </div>
 
-                    {products.length > 0 ? (
-                        <SliderWrapper
-                            autoPlay
-                            autoPlayOptions={{ delay: 3000, stopOnMouseEnter: true, stopOnInteraction: false }}
-                            options={{ loop: true, align: 'start' }}
-                            className="-ml-3 md:-ml-4"
-                            viewportClassName="py-1 -my-1"
-                            slideClassName="flex basis-full pl-3 md:basis-1/2 md:pl-4 lg:basis-1/3 [&>*]:flex-1 [&>*]:min-w-0"
-                            btnLeft="-left-3 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
-                            btnRight="-right-3 rounded-full bg-white text-zinc-800 shadow-md hover:bg-primary-500 hover:text-white disabled:bg-white/60"
-                        >
-                            {products.map((product) => (
-                                <HomeProductCard key={product.id} product={product} onBuyNow={setBuyProduct} horizontal />
-                            ))}
-                        </SliderWrapper>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                            {isLoading
-                                ? Array.from({ length: 3 }).map((_, i) => <HorizontalSkeleton key={i} />)
+                    {/* Fixed grid, same as the categories section: 3 per row on desktop, 2 on tablet, 1 on phones */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                        {isLoading
+                            ? Array.from({ length: limit }).map((_, i) => <HorizontalSkeleton key={i} />)
+                            : products.length > 0
+                                ? products.map((product) => (
+                                    <HomeProductCard key={product.id} product={product} onBuyNow={setBuyProduct} horizontal />
+                                ))
                                 : grid}
-                        </div>
-                    )}
+                    </div>
                 </Wrapper>
             ) : (
                 /* Full list page */
