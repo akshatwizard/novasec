@@ -13,21 +13,21 @@ export default function BentoGrid() {
     return (
         <Section>
             <Wrapper>
-                <div className="group grid overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-soft md:grid-cols-2">
+                <div className="group grid overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-soft md:grid-cols-[1.15fr_1fr]">
 
                     {/* Picture */}
                     <Link
                         href="/custom-made-bags"
-                        className="relative block aspect-[4/3] overflow-hidden bg-white md:aspect-auto md:min-h-[440px]"
+                        className="relative block aspect-[1242/975] overflow-hidden bg-white md:aspect-auto md:min-h-[480px]"
                         tabIndex={-1}
                         aria-hidden="true"
                     >
                         <Image
-                            src="/images/custom-bag/bag.jpg"
+                            src="/images/custom-bag/bag-banner.jpg"
                             alt="Custom-made bulk bag"
                             fill
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 55vw"
+                            className="object-contain p-2 md:p-4 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                         />
                     </Link>
 
