@@ -4,7 +4,7 @@ import Section from './ui/section'
 import Wrapper from './ui/wrapper'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, PackageSearch, Sparkles } from 'lucide-react'
+import { ArrowRight, ChevronRight, PackageSearch, ShoppingBag, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -52,6 +52,9 @@ export default function ProductCategory() {
         },
     });
 
+    // SHOP NOW opens the Big Bags catalog (live slug from the categories API, known path as fallback).
+    const bigBagsHref = `/category/${data?.find((c) => /big/i.test(c.slug) || /big/i.test(c.title))?.slug ?? "big-bags"}`;
+
     // Sixth block: one popular product, picked at random per visit. The products are fetched in
     // the browser, so this never affects the server render or hydration.
     const { data: popular } = usePopularProducts();
@@ -68,9 +71,21 @@ export default function ProductCategory() {
                         <span className="size-1.5 rounded-full bg-primary-500" />
                         Our Product Categories
                     </span>
-                    <h2 className="lg:text-[44px] md:text-4xl text-3xl leading-tight font-light text-zinc-900">
-                        Industrial bags built for <em className="text-primary-500">every load</em>
-                    </h2>
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                        <h2 className="lg:text-[44px] md:text-4xl text-3xl leading-tight font-light text-zinc-900">
+                            Bags built for <em className="text-primary-500">every load</em>
+                        </h2>
+                        {/* Highlighted call to action: opens the Big Bags catalog */}
+                        <Link
+                            href={bigBagsHref}
+                            className="group/shop relative inline-flex shrink-0 items-center gap-2 rounded-full bg-primary-500 px-6 py-3 text-sm md:text-base font-bold uppercase tracking-wider text-white shadow-lg shadow-primary-500/40 transition-all hover:bg-primary-600 hover:shadow-xl hover:shadow-primary-500/50 active:scale-[0.97]"
+                        >
+                            <span aria-hidden="true" className="absolute -inset-1 rounded-full ring-2 ring-primary-400 animate-pulse motion-reduce:hidden" />
+                            <ShoppingBag size={18} className="relative" />
+                            <span className="relative">Shop Now</span>
+                            <ArrowRight size={18} className="relative transition-transform group-hover/shop:translate-x-1" />
+                        </Link>
+                    </div>
                     <p className="max-w-2xl text-pretty text-zinc-600 md:text-lg text-base">
                         From heavy-duty big bags to certified recycled bags — choose a category to explore the full range.
                     </p>
