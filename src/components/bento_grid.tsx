@@ -1,121 +1,72 @@
-'use client';
-
 import Link from 'next/link';
+import Image from "next/image";
+import { ArrowRight, Printer, Ruler } from 'lucide-react';
 import Section from './ui/section'
 import Wrapper from './ui/wrapper'
-import Image from "next/image";
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { MenuResponse } from '@/types/menu.types';
 
-type GridItems = {
-    title: string;
-    description?: string;
-    image: string;
-    large?: boolean;
-    cta: string;
-    url: string;
-    tag?: string;
-}
-
+/**
+ * Custom-made Bulk Bags banner: picture on the left, heading, text, highlighted
+ * "custom built and custom print" message and Contact Us button on the right.
+ * (Stacks picture-then-text on phones.)
+ */
 export default function BentoGrid() {
-    // Reuses the same "menu" query the header already fetches — React Query
-    // de-dupes this against that request, so it's not an extra network call.
-    const { data } = useQuery<MenuResponse>({
-        queryKey: ["menu"],
-        queryFn: async function () {
-            const res = await axios.get<MenuResponse>("https://www.gangapapers.in/novasac/api/menu");
-            return res.data
-        },
-    })
-
-    // Resolve the live category slug for "Big Bags" instead of a hardcoded guess.
-    // Falls back to the previous known-good path if the menu hasn't loaded yet or the
-    // category can't be matched, so the link is never broken.
-    const bulkBagsCategory = data?.data.find(
-        (item) => item.title.trim().toLowerCase().startsWith("big bag")
-    );
-    const bulkBagsUrl = bulkBagsCategory
-        ? `/category/${bulkBagsCategory.category_slug}`
-        : "/category/big-bags";
-
-    const items: GridItems[] = [
-        {
-            title: "Big Bag Outlet",
-            description: "High-quality branded packaging solutions for businesses of every scale.",
-            image: "/images/bento/big_bag.png",
-            cta: "Shop Now",
-            url: bulkBagsUrl,
-        },
-        {
-            title: "Custom-made Bulk Bags",
-            description: "Tailor-made bulk bags built to your exact specifications.",
-            image: "/images/custom-bag/bag.jpg",
-            cta: "Contact Us",
-            url: "/custom-made-bags",
-        },
-    ];
-
     return (
         <Section>
             <Wrapper>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {items.map((item) => (
-                        <div
-                            key={item.title}
-                            className={`group relative overflow-hidden bg-neutral-900 rounded-3xl ${item.large ? "md:col-span-2 h-90" : "h-110"
-                                }`}
-                        >
-                            <Image
-                                src={item.image}
-                                alt={item.title}
-                                fill
-                                sizes={item.large
-                                    ? "(max-width: 768px) 100vw, 100vw"
-                                    : "(max-width: 768px) 100vw, 50vw"
-                                }
-                                className="object-cover transition-all duration-700 ease-out group-hover:scale-105"
-                            />
+                <div className="group grid overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-soft md:grid-cols-2">
 
-                            <div className="absolute inset-0 bg-black/20 transition-all duration-500 group-hover:bg-black/60" />
+                    {/* Picture */}
+                    <Link
+                        href="/custom-made-bags"
+                        className="relative block aspect-[4/3] overflow-hidden bg-white md:aspect-auto md:min-h-[440px]"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                    >
+                        <Image
+                            src="/images/custom-bag/bag.jpg"
+                            alt="Custom-made bulk bag"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+                    </Link>
 
-                            <div
-                                className="absolute inset-0 z-20 flex items-center justify-center opacity-100  transition-all duration-500 pointer-events-none"
-                            >
-                                <Link
-                                    href={item.url}
-                                    className="pointer-events-auto translate-y-4 md:translate-y-8 md:group-hover:translate-y-0 transition-all duration-500 rounded-full bg-primary-500 px-6 py-3 text-sm font-semibold text-white shadow-xl hover:scale-105"
-                                >
-                                    {item.cta}
-                                </Link>
-                            </div>
+                    {/* Content */}
+                    <div className="relative flex flex-col justify-center gap-5 overflow-hidden bg-linear-to-br from-primary-50 via-white to-white p-6 sm:p-8 lg:p-12">
+                        <span aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full border-[36px] border-primary-100/70" />
 
-                            {/* Tag */}
-                            {item.tag && (
-                                <span className="absolute top-5 left-5 z-10 rounded-full bg-primary-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">
-                                    {item.tag}
-                                </span>
-                            )}
+                        <span className="relative inline-flex w-fit items-center gap-2 rounded-full border border-primary-200 bg-white px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
+                            <span className="size-1.5 rounded-full bg-primary-500" />
+                            Made to order
+                        </span>
 
-                            {/* Bottom Content */}
-                            <div
-                                className="absolute bottom-0 left-0 right-0 z-10 p-6 transition-all duration-500 md:group-hover:translate-y-4"
-                            >
-                                <h3
-                                    className={`font-bold leading-tight text-white ${item.large ? "text-2xl md:text-4xl" : "text-xl md:text-2xl"
-                                        }`}
-                                >
-                                    {item.title}
-                                </h3>
+                        <h2 className="relative lg:text-[44px] md:text-4xl text-3xl leading-tight font-light text-zinc-900">
+                            Custom-made <em className="text-primary-500">Bulk Bags</em>
+                        </h2>
 
-                                {item.description && (
-                                    <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/80">
-                                        {item.description}
-                                    </p>
-                                )}
-                            </div>
+                        <p className="relative max-w-lg text-pretty text-zinc-600 md:text-lg text-base">
+                            Tailor-made bulk bags built to your exact specifications.
+                        </p>
+
+                        {/* Highlighted message */}
+                        <div className="relative flex w-fit max-w-full items-center gap-3 rounded-2xl bg-linear-to-r from-primary-600 to-primary-500 px-5 py-4 text-white shadow-lg shadow-primary-500/30">
+                            <span className="flex shrink-0 items-center gap-1.5">
+                                <Ruler size={20} />
+                                <Printer size={20} />
+                            </span>
+                            <p className="text-base font-bold leading-snug md:text-lg">
+                                Get your bags custom built and custom print
+                            </p>
                         </div>
-                    ))}
+
+                        <Link
+                            href="/custom-made-bags"
+                            className="relative inline-flex w-fit items-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-primary-600 active:scale-[0.98]"
+                        >
+                            Contact Us
+                            <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+                        </Link>
+                    </div>
                 </div>
             </Wrapper>
         </Section>
