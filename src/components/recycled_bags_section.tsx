@@ -64,7 +64,18 @@ export default function RecycledBagsSection() {
 
     return (
         <Section>
-            <Wrapper className="lg:py-10 md:py-8 sm:py-6 py-6">
+            <Wrapper className="lg:py-10 md:py-8 sm:py-6 py-6 lg:gap-7 md:gap-6 gap-5">
+                {/* Section heading, same style as the other homepage sections */}
+                <div className="flex flex-col gap-3">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
+                        <span className="size-1.5 rounded-full bg-primary-500" />
+                        Sustainable packaging
+                    </span>
+                    <h2 className="lg:text-[44px] md:text-4xl text-3xl leading-tight font-light text-zinc-900">
+                        Bags ready for <em className="text-primary-500">EU compliance</em>
+                    </h2>
+                </div>
+
                 <div className="overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-soft md:grid md:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:grid-cols-[520px_minmax(0,1fr)] xl:grid-cols-[580px_minmax(0,1fr)]">
 
                     {/* Product picture */}
