@@ -7,6 +7,20 @@ import { cartCount, clearCart, closeCart, removeItem, setItemQty, useCart, type 
 import QuantityStepper from './quantity_stepper'
 import OrderRequestModal from './order_request_modal'
 
+type TawkApi = { hideWidget?: () => void; showWidget?: () => void; onLoad?: () => void }
+
+/** Hides the tawk.to chat bubble (it sits over the cart's buttons) and brings it back afterwards. */
+function setChatWidgetHidden(hidden: boolean) {
+    const tawk = (window as unknown as { Tawk_API?: TawkApi }).Tawk_API
+    if (!tawk) return
+    try {
+        if (hidden) tawk.hideWidget?.()
+        else tawk.showWidget?.()
+    } catch {
+        // Widget not ready yet: ignore — the next open/close will apply it.
+    }
+}
+
 /** Slide-over cart. Mounted once in the root layout; opened from the header and from "Add to Cart". */
 export default function CartDrawer() {
     const { items, open } = useCart()
@@ -25,6 +39,21 @@ export default function CartDrawer() {
         closeRef.current?.focus()
         return () => document.removeEventListener('keydown', onKey)
     }, [open, ordering])
+
+    // Chat widget disappears while the cart (or its order form) is open, and returns when it closes.
+    const cartVisible = open || ordering
+    useEffect(() => {
+        if (!cartVisible) return
+        setChatWidgetHidden(true)
+        // If the chat script finishes loading while the cart is open, hide it then too.
+        const tawk = (window as unknown as { Tawk_API?: TawkApi }).Tawk_API
+        const previous = tawk?.onLoad
+        if (tawk) tawk.onLoad = () => { previous?.(); setChatWidgetHidden(true) }
+        return () => {
+            if (tawk) tawk.onLoad = previous
+            setChatWidgetHidden(false)
+        }
+    }, [cartVisible])
 
     const closeOrder = () => {
         setOrderItems(null)

@@ -72,7 +72,7 @@ export default function RecycledBagsSection() {
                         Sustainable packaging
                     </span>
                     <h2 className="lg:text-[44px] md:text-4xl text-3xl leading-tight font-light text-zinc-900">
-                        Bags ready for <em className="text-primary-500">EU compliance</em>
+                        Bags ready for <em className="text-primary-500">EU PPWR Compliance</em>
                     </h2>
                 </div>
 
