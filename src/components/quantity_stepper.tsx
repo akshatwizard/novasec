@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
+import { MAX_QTY, MIN_QTY, nextQty, prevQty, snapQty } from '@/lib/quantity'
 
 interface QuantityStepperProps {
     value: number
@@ -14,12 +15,15 @@ interface QuantityStepperProps {
     compact?: boolean
 }
 
-/** − [ 3 ] + control. The number can also be typed; it is clamped to min–max when the field loses focus. */
+/**
+ * − [ 10 ] + control. The buttons move through the allowed quantities (1, 10–100 by 10, 150–500 by 50).
+ * A typed number is moved to the nearest allowed quantity when the field loses focus (or on Enter).
+ */
 export default function QuantityStepper({
     value,
     onChange,
-    min = 1,
-    max = 999,
+    min = MIN_QTY,
+    max = MAX_QTY,
     disabled,
     label = 'Quantity',
     compact,
@@ -27,13 +31,18 @@ export default function QuantityStepper({
     // While typing, the field may be empty or partial; the real value only changes on valid input.
     const [draft, setDraft] = useState<string | null>(null)
 
-    const clamp = (n: number) => Math.min(max, Math.max(min, n))
+    const clamp = (n: number) => snapQty(Math.min(max, Math.max(min, n)))
     const size = compact ? 'h-8 w-8' : 'h-11 w-11'
     const field = compact ? 'h-8 w-11 text-sm' : 'h-11 w-16 text-base'
 
-    const step = (delta: number) => {
+    const step = (direction: 1 | -1) => {
         setDraft(null)
-        onChange(clamp(value + delta))
+        onChange(clamp(direction > 0 ? nextQty(value) : prevQty(value)))
+    }
+
+    const commitDraft = () => {
+        if (draft !== null && draft !== '') onChange(clamp(parseInt(draft, 10)))
+        setDraft(null)
     }
 
     return (
@@ -57,9 +66,9 @@ export default function QuantityStepper({
                 onChange={(e) => {
                     const digits = e.target.value.replace(/\D/g, '').slice(0, 3)
                     setDraft(digits)
-                    if (digits !== '') onChange(clamp(parseInt(digits, 10)))
                 }}
-                onBlur={() => setDraft(null)}
+                onBlur={commitDraft}
+                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
                 onFocus={(e) => e.target.select()}
                 className={`${field} border-y border-zinc-200 bg-white text-center font-semibold text-zinc-900 outline-none focus:bg-primary-50`}
             />

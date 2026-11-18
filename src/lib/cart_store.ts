@@ -1,3 +1,4 @@
+import { snapQty, snapQtyUp } from './quantity'
 import { useSyncExternalStore } from 'react'
 
 /**
@@ -29,7 +30,7 @@ interface CartState {
     open: boolean
 }
 
-export const MAX_QTY = 999
+export { MAX_QTY } from './quantity'
 
 // Bumped to v2 so carts saved before the single-size change (old size options) are dropped.
 const STORAGE_KEY = 'novasac_cart_v2'
@@ -42,7 +43,8 @@ let loaded = false
 let storageBound = false
 const listeners = new Set<() => void>()
 
-const clampQty = (qty: number) => Math.min(MAX_QTY, Math.max(1, Math.floor(qty) || 1))
+// Quantities always sit on the allowed steps (1, 10–100 by 10, 150–500 by 50).
+const clampQty = (qty: number) => snapQty(qty)
 
 function isCartItem(value: unknown): value is CartItem {
     if (typeof value !== 'object' || value === null) return false
@@ -132,7 +134,7 @@ export function addToCart(item: Omit<CartItem, 'id' | 'qty'>, qty: number, openD
     const exists = current.items.some((line) => line.id === id)
 
     const items = exists
-        ? current.items.map((line) => (line.id === id ? { ...line, qty: clampQty(line.qty + amount) } : line))
+        ? current.items.map((line) => (line.id === id ? { ...line, qty: snapQtyUp(line.qty + amount) } : line))
         : [...current.items, { ...item, id, qty: amount }]
 
     update({ items, open: openDrawer ? true : current.open }, true)

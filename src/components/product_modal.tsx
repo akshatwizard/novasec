@@ -1,5 +1,6 @@
 'use client'
 
+import { MAX_QTY, MIN_QTY, nextQty, prevQty } from '@/lib/quantity'
 import { useEffect, useRef, useState } from 'react'
 import { ShoppingCart, MailCheck, X, Minus, Plus, Package, Loader2 } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query';
@@ -299,8 +300,8 @@ export function BuyNowModal({ product, onClose }: { product: ProductInfo; onClos
                             <Field label="Quantity">
                                 <div className="flex items-center">
                                     <button
-                                        onClick={() => setQty(q => Math.max(1, q - 1))}
-                                        disabled={isPending || qty <= 1}
+                                        onClick={() => setQty(q => prevQty(q))}
+                                        disabled={isPending || qty <= MIN_QTY}
                                         type="button"
                                         className="flex h-10 w-10 items-center justify-center rounded-l-xl border border-r-0 border-stone-200 bg-stone-50 text-stone-600 transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
@@ -310,8 +311,8 @@ export function BuyNowModal({ product, onClose }: { product: ProductInfo; onClos
                                         {qty}
                                     </div>
                                     <button
-                                        onClick={() => setQty(q => Math.min(999, q + 1))}
-                                        disabled={isPending || qty >= 999}
+                                        onClick={() => setQty(q => nextQty(q))}
+                                        disabled={isPending || qty >= MAX_QTY}
                                         type="button"
                                         className="flex h-10 w-10 items-center justify-center rounded-r-xl border border-l-0 border-stone-200 bg-stone-50 text-stone-600 transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
