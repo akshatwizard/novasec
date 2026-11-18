@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, ChangeEvent, FormEvent } from "react";
 import toast from "react-hot-toast";
+import BagSpecForm from "@/components/bag_spec_form";
 
 
 interface FormData {
@@ -611,6 +612,9 @@ export default function CustomBags() {
                     </div>
                 </Wrapper>
             </Section>
+
+            {/* ── Bag specification form (second option) ── */}
+            <BagSpecForm />
 
             {/* ── Features strip (mobile) ── */}
             <Section className="md:hidden border-t border-stone-200 bg-white px-6 py-10">
