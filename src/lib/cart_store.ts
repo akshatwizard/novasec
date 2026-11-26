@@ -43,7 +43,7 @@ let loaded = false
 let storageBound = false
 const listeners = new Set<() => void>()
 
-// Quantities always sit on the allowed steps (1, 10–100 by 10, 150–500 by 50).
+// Quantities always sit on the allowed steps (1, 10–100 by 10, 150–1,000 by 50, 1,500–10,000 by 500).
 const clampQty = (qty: number) => snapQty(qty)
 
 function isCartItem(value: unknown): value is CartItem {

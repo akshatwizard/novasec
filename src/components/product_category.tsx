@@ -61,6 +61,8 @@ export default function ProductCategory() {
     const [seed] = useState(() => Math.random());
     const featured = popular?.length ? popular[Math.floor(seed * popular.length)] : null;
     const [buyProduct, setBuyProduct] = useState<ProductData | null>(null);
+    const [buyQty, setBuyQty] = useState(1);
+    const openBuy = (product: ProductData, qty: number) => { setBuyProduct(product); setBuyQty(qty); };
 
     return (
         <Section>
@@ -127,7 +129,7 @@ export default function ProductCategory() {
                                     <Sparkles size={11} />
                                     Featured
                                 </span>
-                                <HomeProductCard product={featured} onBuyNow={setBuyProduct} horizontal />
+                                <HomeProductCard product={featured} onBuyNow={openBuy} horizontal />
                             </div>
                         )}
                     </div>
@@ -137,7 +139,7 @@ export default function ProductCategory() {
 
             {buyProduct && (
                 <OrderRequestModal
-                    items={[{ title: buyProduct.title, size: '', qty: 1, image: productImage(buyProduct), sku: buyProduct.sku ?? undefined }]}
+                    items={[{ title: buyProduct.title, size: '', qty: buyQty, image: productImage(buyProduct), sku: buyProduct.sku ?? undefined }]}
                     onClose={() => setBuyProduct(null)}
                 />
             )}

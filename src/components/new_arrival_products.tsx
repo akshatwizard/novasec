@@ -32,6 +32,8 @@ type Props = {
 
 export default function Products({ limit }: Props) {
     const [buyProduct, setBuyProduct] = useState<ProductData | null>(null)
+    const [buyQty, setBuyQty] = useState(1);
+    const openBuy = (product: ProductData, qty: number) => { setBuyProduct(product); setBuyQty(qty); };
 
     const { data, isLoading, error } = usePopularProducts();
 
@@ -45,7 +47,7 @@ export default function Products({ limit }: Props) {
         <EmptyState message="No products found." />
     ) : (
         products.map((product) => (
-            <HomeProductCard product={product} onBuyNow={setBuyProduct} key={product.id} />
+            <HomeProductCard product={product} onBuyNow={openBuy} key={product.id} />
         ))
     )
 
@@ -83,7 +85,7 @@ export default function Products({ limit }: Props) {
                             ? Array.from({ length: limit }).map((_, i) => <HorizontalSkeleton key={i} />)
                             : products.length > 0
                                 ? products.map((product) => (
-                                    <HomeProductCard key={product.id} product={product} onBuyNow={setBuyProduct} horizontal />
+                                    <HomeProductCard key={product.id} product={product} onBuyNow={openBuy} horizontal />
                                 ))
                                 : grid}
                     </div>
@@ -100,7 +102,7 @@ export default function Products({ limit }: Props) {
 
             {buyProduct && (
                 <OrderRequestModal
-                    items={[{ title: buyProduct.title, size: '', qty: 1, image: productImage(buyProduct), sku: buyProduct.sku ?? undefined }]}
+                    items={[{ title: buyProduct.title, size: '', qty: buyQty, image: productImage(buyProduct), sku: buyProduct.sku ?? undefined }]}
                     onClose={() => setBuyProduct(null)}
                 />
             )}

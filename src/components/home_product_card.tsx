@@ -7,11 +7,13 @@ import { ProductData } from "@/types/home_product.types";
 import { addToCart } from "@/lib/cart_store";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProductDetail, productKeys } from "@/hooks/fetch_product";
+import { useState } from "react";
+import QuantitySlider from "./quantity_slider";
 
 type Props = {
     product: ProductData;
-    /** Opens the order request form for this product. */
-    onBuyNow: (product: ProductData) => void;
+    /** Opens the order request form for this product, with the quantity chosen on the slider. */
+    onBuyNow: (product: ProductData, qty: number) => void;
     /** Image beside the text instead of on top — used for the featured card in the categories grid. */
     horizontal?: boolean;
     /** Smaller card for the homepage Popular Products strip (shorter image, no SKU, smaller buttons). */
@@ -43,10 +45,11 @@ const formatEUR = (n: number) =>
 
 /**
  * Popular-products card in the same style as the catalog listing card, plus Add to Cart and
- * Buy Now. The price is the product's EUR price, or "Price on request" when none is set.
+ * Buy Now, with a quantity slider below them. The price is the product's EUR price, or "Price on request" when none is set.
  */
 export default function HomeProductCard({ product, onBuyNow, horizontal, compact }: Props) {
     const href = productHref(product);
+    const [qty, setQty] = useState(1);
     // The homepage list endpoint returns no prices, so when the list has none the card reads the
     // product's details (the same request and cache as the product page) and shows that price.
     const listPrice = toPrice(product.mrp) ?? toPrice(product.offer_rate);
@@ -70,7 +73,7 @@ export default function HomeProductCard({ product, onBuyNow, horizontal, compact
                 image: productImage(product),
                 sku: product.sku ?? undefined,
             },
-            1,
+            qty,
         );
 
     return (
@@ -130,13 +133,16 @@ export default function HomeProductCard({ product, onBuyNow, horizontal, compact
                     </button>
                     <button
                         type="button"
-                        onClick={() => onBuyNow(product)}
+                        onClick={() => onBuyNow(product, qty)}
                         className="inline-flex items-center justify-center gap-1.5 rounded-full bg-zinc-900 px-3 py-2 text-xs font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.98] cursor-pointer"
                     >
                         <Zap className="h-3.5 w-3.5" />
                         Buy Now
                     </button>
                 </div>
+
+                {/* Quantity for Add to Cart / Buy Now */}
+                <QuantitySlider value={qty} onChange={setQty} compact className="pt-1" />
             </div>
         </div>
     );

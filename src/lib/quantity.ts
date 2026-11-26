@@ -1,11 +1,13 @@
 /**
- * Allowed order quantities: 1, then 10–100 in steps of 10, then 150–500 in steps of 50.
- * Used by every quantity control (cart, product cards, Buy Now) and by the cart store.
+ * Allowed order quantities: 1, then 10–100 in steps of 10, 150–1,000 in steps of 50,
+ * then 1,500–10,000 in steps of 500.
+ * Used by every quantity control (cart, product cards, sliders, Buy Now) and by the cart store.
  */
 export const QTY_STEPS: readonly number[] = [
     1,
-    ...Array.from({ length: 10 }, (_, i) => (i + 1) * 10), // 10, 20, … 100
-    ...Array.from({ length: 8 }, (_, i) => 150 + i * 50),  // 150, 200, … 500
+    ...Array.from({ length: 10 }, (_, i) => (i + 1) * 10),  // 10, 20, … 100
+    ...Array.from({ length: 18 }, (_, i) => 150 + i * 50),  // 150, 200, … 1,000
+    ...Array.from({ length: 18 }, (_, i) => 1500 + i * 500), // 1,500, 2,000, … 10,000
 ];
 
 export const MIN_QTY = QTY_STEPS[0];
@@ -38,4 +40,9 @@ export function prevQty(current: number): number {
         if (QTY_STEPS[i] < current) return QTY_STEPS[i];
     }
     return MIN_QTY;
+}
+
+/** Position of a quantity on the allowed-steps scale (used by the slider). */
+export function qtyIndex(n: number): number {
+    return QTY_STEPS.indexOf(snapQty(n));
 }

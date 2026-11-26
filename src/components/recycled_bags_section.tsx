@@ -12,6 +12,7 @@ import Wrapper from './ui/wrapper'
 import { Heading } from './ui/headings'
 import QuantityStepper from './quantity_stepper'
 import OrderRequestModal from './order_request_modal'
+import QuantitySlider from './quantity_slider'
 import {
     ErrorBanner,
     Field,
@@ -29,7 +30,7 @@ const PHONE_HREF = 'tel:+34628188044'
 // ── Listing data ─────────────────────────────────────────────────────────────────────────────
 // Everything the listing shows lives here so it is easy to update.
 const PRODUCT_ID = 'recycled-garden-bag'
-const PRODUCT_TITLE = '100% Recycled Bags'
+const PRODUCT_TITLE = '100% Recycled PP Content'
 const PRODUCT_IMAGE = '/images/recycled/garden-bag-infographic.jpg'
 // The product details (recycled material, carbon footprint, EN 15343 traceability, EU
 // regulations) are written inside the picture, so the alt text spells them out for screen readers.
@@ -178,6 +179,10 @@ export default function RecycledBagsSection() {
                                 <Zap className="h-4 w-4" />
                                 Buy Now
                             </button>
+                            {/* Quantity slider, kept in step with the Quantity box above */}
+                            <div className="w-full sm:max-w-md">
+                                <QuantitySlider value={qty} onChange={setQty} />
+                            </div>
                             <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 text-sm xl:ml-auto xl:w-auto xl:flex-col xl:items-end">
                                 <button
                                     type="button"

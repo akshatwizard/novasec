@@ -290,3 +290,37 @@ body {
   margin-left: 1.2em;
   color: #57534e;
 }
+
+/* Quantity slider (components/quantity_slider.tsx): orange fill up to the dot, grey after it. */
+.qty-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #ff710a var(--qty-pct, 0%), #d4d4d8 var(--qty-pct, 0%));
+  cursor: pointer;
+  touch-action: none;
+}
+.qty-range:disabled { cursor: not-allowed; opacity: 0.5; }
+.qty-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 4px solid #ff710a;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  transition: transform 0.15s;
+}
+.qty-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border-radius: 9999px;
+  background: #fff;
+  border: 4px solid #ff710a;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+}
+.qty-range:active::-webkit-slider-thumb { transform: scale(1.2); }
+.qty-range:focus-visible { outline: 2px solid #ffba6d; outline-offset: 4px; }

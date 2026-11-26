@@ -16,7 +16,8 @@ interface QuantityStepperProps {
 }
 
 /**
- * − [ 10 ] + control. The buttons move through the allowed quantities (1, 10–100 by 10, 150–500 by 50).
+ * − [ 10 ] + control. The buttons move through the allowed quantities (1, 10–100 by 10, 150–1,000 by 50,
+ * 1,500–10,000 by 500).
  * A typed number is moved to the nearest allowed quantity when the field loses focus (or on Enter).
  */
 export default function QuantityStepper({
@@ -33,7 +34,7 @@ export default function QuantityStepper({
 
     const clamp = (n: number) => snapQty(Math.min(max, Math.max(min, n)))
     const size = compact ? 'h-8 w-8' : 'h-11 w-11'
-    const field = compact ? 'h-8 w-11 text-sm' : 'h-11 w-16 text-base'
+    const field = compact ? 'h-8 w-14 text-sm' : 'h-11 w-16 text-base'
 
     const step = (direction: 1 | -1) => {
         setDraft(null)
